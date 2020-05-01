@@ -1,0 +1,150 @@
+{
+        "L'animal a une perte de sang au niveau d'une cuisse. L'état général de l'animal paraît bon cependant.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal est faible et très fatigué sans avoir de lésions externes. Son état général est plutôt dégradé.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "L'animal a une respiration difficile. L'état général de l'animal est correct malgré une légère fatigue.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "L'animal est amaigri et faible. Mise à part la fatigue, on ne détecte rien d'autre.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "L'animal est calme et très fatigué. Son état général semble relativement correct.":{
+            type: "yes",
+            tools: ["Stéthoscope"]
+        },
+        "L'animal a quelques problèmes respiratoires. Son état général est bon avec une fatigue importante.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "Le propriétaire de l'animal vous indique qu'il ne mange plus depuis deux jours. Son état général est dégradé, l'animal est fatigué et de mauvaise humeur.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "Les yeux de l'animal ont énormément enflé. Leur taille est réellement disproportionnée et l'animal ne semble pas du tout dans son assiette.":{
+            type: "yes",
+            tools: ["Stéthoscope"]
+        },
+        "L'animal saigne abondamment au niveau d'une patte. Il n'en souffre pas et son état général est bon.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal a du mal à poser l'une de ses pattes. Aucune trace de sang n'est visible et son état général est correct.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "L'animal a une zone purulente sur la peau. Ce n'est pas beau à voir mais son état général est bon.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal a une zone du dos sur laquelle la peau est très abîmée. L'animal n'est ni abattu, ni fatigué.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "Une fièvre importante touche l'animal depuis deux jours. Son état général semble mauvais et son moral est pitoyable.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'animal a une respiration difficile et présente une légère fatigue.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'animal a quelques problèmes respiratoires. Il est très fatigué.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "Depuis plusieurs jours l'animal n'a plus goût à rien. Il ne mange presque pas et semble très fatigué.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'animal est très nerveux et se montre agressif lorsqu'on le touche. Son état général paraît très bon.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'abdomen de l'animal bouge tout seul, par petites secousses ! Pourtant l'animal ne souffre pas et son état général est très bon.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "Le teint de l'animal a viré au jaune. Ses yeux sont vitreux et il est atteint de nausées.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "Un os de l'animal est brisé et a déchiré la peau. L'animal souffre énormément et demande des soins rapides.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "Suite à une collision sévère l'animal est au plus mal. Une zone bleue est apparue sur son flanc.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "Une fièvre importante semble atteindre l'animal depuis deux jours. Son état général est mauvais.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "Les yeux de l'animal rejettent beaucoup de larmes et de sécrétions. L'état général de l'animal est correct.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "L'animal a une zone purulente entre les poils. Ce n'est pas beau à voir mais l'état général de l'animal semble bon.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal se montre agressif lorsqu'on le touche. Son état général semble très bon.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'abdomen de l'animal bouge tout seul, par petites secousses ! Pourtant l'animal ne souffre pas.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "Les yeux de l'animal sont rouges et rejettent une grosse quantité de sécrétions. L'état général de l'animal est correct.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "L'animal semble avoir quelques problèmes respiratoires. Son état général est bon avec une fatigue importante.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "L'animal est calme et très fatigué, son état général est correct.":{
+            type: "yes",
+            tools: ["Stéthoscope"]
+        },
+        "Depuis plusieurs jours l'animal n'a plus goût à rien. Il ne mange presque pas et est très fatigué.":{
+            type: "not",
+            tools: ["Stéthoscope","Loupe","Radiologie","Microscope"]
+        },
+        "L'animal est amaigri et faible. Mise à part la fatigue, on ne détecte rien de plus.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "Une boursouflure est apparue sur la peau de l'animal. Elle le gêne car il ne cesse de faire des mouvements pour atteindre la zone enflée.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal semble faible et très fatigué sans avoir de lésions externes. Son état général est plutôt dégradé.":{
+            type: "yes",
+            tools: ["Microscope"]
+        },
+        "L'animal a du mal à utiliser sa queue. Aucune trace de sang n'est visible et son état général est correct.":{
+            type: "yes",
+            tools: ["Radiologie"]
+        },
+        "L'animal a une perte de sang au niveau de la queue. L'état général de l'animal semble bon cependant.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal saigne abondamment au niveau du flanc. Il n'en souffre pas et son état général est bon.":{
+            type: "yes",
+            tools: ["Loupe"]
+        },
+        "L'animal a une respiration difficile. L'état général de l'animal semble correct avec une légère fatigue.":{
+            type: "not",
+            tools: ["Radiologie"]
+        }
+    };
