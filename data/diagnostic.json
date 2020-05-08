@@ -147,7 +147,7 @@
             "type": "not",
             "tools": ["Radiologie"]
         },
-        "L'animal est calme et très fatigué. Son état général paraît relativement correct. ":{
+        "L'animal est calme et très fatigué. Son état général paraît relativement correct.":{
             "type:": "not",
             "tools": ["Radiologie"]
         }
