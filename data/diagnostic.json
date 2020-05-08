@@ -146,5 +146,9 @@
         "L'animal a une respiration difficile. L'état général de l'animal semble correct avec une légère fatigue.":{
             "type": "not",
             "tools": ["Radiologie"]
+        },
+        "L'animal est calme et très fatigué. Son état général paraît relativement correct. ":{
+            "type:": "not",
+            "tools": ["Radiologie"]
         }
 }
