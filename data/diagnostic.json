@@ -150,5 +150,9 @@
         "L'animal est calme et très fatigué. Son état général paraît relativement correct.":{
             "type:": "not",
             "tools": ["Radiologie"]
+        },
+        "La tête de l'animal a quadruplé de volume sans aucune raison apparente. De plus l'animal semble particulièrement content et tranquille, voire même fier de lui.":{
+                "type": "not",
+                "tools": ["Stéthoscope"]
         }
 }
