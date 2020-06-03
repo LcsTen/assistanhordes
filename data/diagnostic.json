@@ -154,5 +154,9 @@
         "La tête de l'animal a quadruplé de volume sans aucune raison apparente. De plus l'animal semble particulièrement content et tranquille, voire même fier de lui.":{
                 "type": "not",
                 "tools": ["Stéthoscope"]
+        },
+        "L'animal s'est coupé profondément au niveau d'une patte. Il ne semble pas en souffrir et son état général semble bon.":{
+                "type": "not",
+                "tools": ["Loupe"]
         }
 }
