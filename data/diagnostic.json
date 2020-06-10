@@ -157,6 +157,6 @@
         },
         "L'animal s'est coupé profondément au niveau d'une patte. Il ne semble pas en souffrir et son état général semble bon.":{
                 "type": "not",
-                "tools": ["Loupe","Radiologie"]
+                "tools": ["Loupe","Radiologie","Microscope"]
         }
 }
