@@ -158,5 +158,9 @@
         "L'animal s'est coupé profondément au niveau d'une patte. Il ne semble pas en souffrir et son état général semble bon.":{
                 "type": "not",
                 "tools": ["Loupe","Radiologie","Microscope"]
+        },
+        "La peau de l'animal se couvre de petites lésions depuis quelques temps. L'animal n'en souffre pas mais c'est inquiétant.":{
+                "type": "yes",
+                "tools": ["Loupe"]
         }
 }
