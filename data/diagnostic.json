@@ -162,5 +162,9 @@
         "La peau de l'animal se couvre de petites lésions depuis quelques temps. L'animal n'en souffre pas mais c'est inquiétant.":{
                 "type": "yes",
                 "tools": ["Loupe"]
+        },
+        "L'animal s'est coupé profondément au niveau du flanc. Il ne semble pas en souffrir et son état général semble bon.":{
+                "type": "yes",
+                "tools": ["Loupe"]
         }
 }
