@@ -166,5 +166,9 @@
         "L'animal s'est coupé profondément au niveau du flanc. Il ne semble pas en souffrir et son état général semble bon.":{
                 "type": "yes",
                 "tools": ["Loupe"]
+        },
+        "L'animal a des taches sombres qui se répandent un peu partout. L'animal n'est ni abattu, ni fatigué.":{
+                "type": "yes",
+                "tools": ["Loupe"]
         }
 }
