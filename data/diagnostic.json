@@ -170,5 +170,9 @@
         "L'animal a des taches sombres qui se répandent un peu partout. L'animal n'est ni abattu, ni fatigué.":{
                 "type": "yes",
                 "tools": ["Loupe"]
+        },
+        "L'animal perd ses poils très rapidement depuis quelques temps. L'animal n'en souffre pas mais c'est inquiétant.":{
+                "type": "yes",
+                "tools": ["Loupe"]
         }
 }
