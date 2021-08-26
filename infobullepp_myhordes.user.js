@@ -455,7 +455,7 @@ class ControlRecovery extends Info {
 	constructor(nb){
 		super();
 		this.seconds = nb%60;
-		this.minutes = nb/60;
+		this.minutes = Math.floor(nb/60);
 	}
 	
 	style(){
