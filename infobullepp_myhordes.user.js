@@ -895,9 +895,12 @@ function main(){
 }
 
 let infobulleppCSSRules = `
+div.item-tag {
+	padding-left: 17px;
+}
+
 div.item-tag.item-tag-long-lines {
 	height: initial;
-	padding-left: 17px;
 }
 
 div.item-tag.item-tag-dangerous {
