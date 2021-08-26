@@ -844,11 +844,11 @@ const items = {
 	food_xmas: [EVENT_ITEM, TO_ASSEMBLE, COOKABLE, assemble("can_open", "wood_xmas")],
 	tekel: [DEFENSE_ITEM, HOME_ITEM, weapon("1+"), ANIMAL, butcher("meat", "meat"), new Special("Empêche les vols")],
 	vodka_de: [apSource(6), ALCOHOL, causes("status_drunk")],
-	cinema: [BULKY], // TODO: Add information
+	cinema: [BULKY, weapon(1)],
 	fest: [apSource(6), ALCOHOL, causes("status_drunk")],
-	bretz: [], // TODO: Add information
-	leprechaun_suit: [], // TODO: Add information
-	hurling_stick: [], // TODO: Add information
+	bretz: [apSource(6), FOOD, COOKABLE, causes("status_haseaten")],
+	leprechaun_suit: [],
+	hurling_stick: [weapon("0-1"), BREAKABLE],
 	guiness: [apSource(6), ALCOHOL, causes("status_drunk")]
 };
 
