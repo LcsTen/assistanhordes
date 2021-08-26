@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.1
+// @version  0.11
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -866,6 +866,32 @@ function displayInfo(thisItem, info){
 	return div;
 }
 
+function createNewTooltips(){
+	document.querySelectorAll(".tool").forEach(tool => {
+		let itemName = tool.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
+		let itemInfo = items[itemName];
+		let itemTitle = tool.innerText.trim();
+		if(itemInfo === undefined){
+			itemInfo = items[itemTitle];
+		}
+		if(itemInfo === undefined){
+			return;
+		}
+		let itemTooltip = document.createElement("div");
+		itemTooltip.classList.add("tooltip", "normal");
+		let h1 = document.createElement("h1");
+		h1.innerHTML = itemTitle + "  " + imageOfItem(itemName);
+		itemTooltip.appendChild(h1);
+		for(let info of itemInfo){
+			if(info.when() & NEW_TOOLTIP){
+				itemTooltip.appendChild(displayInfo(itemName, info));
+			}
+		}
+		tool.appendChild(itemTooltip);
+		unsafeWindow.$.html.handleTooltip(itemTooltip);
+	});
+}
+
 function main(){
 	document.querySelectorAll(".item").forEach(item => {
 		let itemName = item.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
@@ -892,6 +918,7 @@ function main(){
 			}
 		}
 	});
+	createNewTooltips();
 }
 
 let infobulleppCSSRules = `
@@ -966,5 +993,11 @@ document.head.appendChild(stylesheet);
 new MutationObserver((mutations, observer) => {
 	if(document.querySelector(".item") !== null){
 		try{main()}catch(e){console.error(e);};
+	}
+	let logContent = document.querySelector(".log-content");
+	if(logContent !== null){
+		new MutationObserver(() => {
+			createNewTooltips();
+		}).observe(logContent, {childList: true});
 	}
 }).observe(document.querySelector("#content"), {childList: true});
