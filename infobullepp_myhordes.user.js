@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11
+// @version  0.111
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -38,24 +38,27 @@ function itemList(items, separator = ", "){
 	return imageList(ITEM_IMG_BASE_URL, items, separator);
 }
 
+function imageOfDefault(thing){
+	let baseUrl;
+	if(thing.startsWith("item_")){
+		baseUrl = ITEM_IMG_BASE_URL;
+		thing = thing.substring(5);
+	}else if(thing.startsWith("status_")){
+		baseUrl = STATUS_IMG_BASE_URL;
+		thing = thing.substring(7);
+	}else{
+		baseUrl = ICON_IMG_BASE_URL;
+	}
+	return imageOf(baseUrl, thing);
+}
+
 function defaultList(list, separator = ", "){
 	let res = "";
 	for(let i = 0;i < list.length;i++){
-		let thing = list[i];
 		if(i !== 0){
 			res += separator;
 		}
-		let baseURL;
-		if(thing.startsWith("item_")){
-			baseURL = ITEM_IMG_BASE_URL;
-			thing = thing.substr(5);
-		}else if(thing.startsWith("status_")){
-			baseURL = STATUS_IMG_BASE_URL;
-      thing = thing.substr(7);
-		}else{
-			baseURL = ICON_IMG_BASE_URL;
-		}
-		res += imageOf(baseURL, thing);
+		res += imageOfDefault(list[i]);
 	}
 	return res;
 }
@@ -418,20 +421,29 @@ function transformInto(...items){
 	return new TransformInto(items);
 }
 
-class MayCause extends InfoHelp {
-	constructor(statuses){
+class MayCause extends Info {
+	constructor(statusProba){
 		super();
-		this.statuses = statuses;
+		this.statusProba = statusProba;
 	}
-	
+
+	style(){
+		return ["item-tag-information", "item-tag-help", "item-tag-long-lines"];
+	}
+
 	display(){
-		return `Peut provoquer : ${defaultList(this.statuses)}`;
+		let res = "Peut provoquer : ";
+		let i = 0;
+		for(let status in this.statusProba){
+			if(i !== 0){
+				res += ", ";
+			}
+			res += `${imageOfDefault(status)} (${this.statusProba[status]}%)`;
+			i++;
+		}
+		return res;
 	}
 };
-
-function mayCause(...statuses){
-	return new MayCause(statuses);
-}
 
 class ClearDust extends Info {
 	constructor(nb){
@@ -611,7 +623,7 @@ const items = {
 	vodka: [apSource(6), ALCOHOL, causes("status_drunk"), usedWith("oilcan")],
 	jerrygun_off: [TO_ASSEMBLE, assemble("jerrycan", "jerrygun")],
 	explo: [resource(8), usedWith("deto", "wire")],
-	hmeat: [watchWeapon(20), resource(3), apSource(6), FOOD, COOKABLE, causes("status_haseaten"), mayCause("status_ghoul")],
+	hmeat: [watchWeapon(20), resource(3), apSource(6), FOOD, COOKABLE, causes("status_haseaten"), new MayCause({status_ghoul: 10})],
 	grenade_empty: [TO_ASSEMBLE, assemble("water", "grenade"), usedWith("deto", "watergun_opt_part", "powder")],
 	bgrenade: [watchWeapon(20), new Weapon("6-10"), new Becomes("small_remove")],
 	bgrenade_empty: [TO_ASSEMBLE, assemble("water", "bgrenade")],
@@ -666,7 +678,7 @@ const items = {
 	deto: [resource(3), TO_ASSEMBLE, assemble(["explo", "grenade_empty", "rustine"], "bgrenade_empty"), usedWith("watergun_opt_part", "engine_part")],
 	concrete: [BULKY, TO_ASSEMBLE, assemble("water", "concrete_wall")],
 	concrete_wall: [BULKY, DEFENSE_ITEM, HOME_ITEM, resource(19), new Weapon(1), new Breakable(20)],
-	drug_random: [apSource("0, 6, 7"), DRUG, mayCause("status_drugged", "status_addict", "status_terror")],
+	drug_random: [apSource("0, 6, 7"), DRUG, new MayCause({status_drugged: 50, status_addict: 20, status_terror: 20})],
 	disinfect: [DRUG, HEAL_ITEM, heals("infection"), causes("status_drugged", "status_immune")],
 	digger: [new ClearDust("1-5")],
 	chest_food: [BULKY, OPENABLE, openGives(["can", "meat", "hmeat", "vegetable", "food_bag", "vegetable_tasty"])],
@@ -682,11 +694,11 @@ const items = {
 	food_noodles: [apSource(6), FOOD, COOKABLE, causes("status_haseaten"), usedWith("spices")],
 	spices: [TO_ASSEMBLE, assemble(["water", "food_noodles"], "food_noodles_hot")],
 	food_noodles_hot: [apSource(7), FOOD, causes("status_haseaten")],
-	cards: [apSource("0, 1"), mayCause("status_terror")],
+	cards: [apSource("0, 1"), new MayCause({status_terror: (1/53*100).toFixed(2)})],
 	game_box: [OPENABLE, openGives(["dice", "cards"])],
 	watergun_opt_part: [TO_ASSEMBLE, assemble(["grenade_empty", "rustine", "tube", "deto"], "watergun_opt_empty")],
 	vibr_empty: [TO_ASSEMBLE, assemble("pile", "vibr")],
-	bone_meat: [watchWeapon(10), resource(1), apSource(6), FOOD, COOKABLE, causes("status_haseaten"), mayCause("status_infection", "status_ghoul")],
+	bone_meat: [watchWeapon(10), resource(1), apSource(6), FOOD, COOKABLE, causes("status_haseaten"), new MayCause({status_infection: 50, status_ghoul: 5})],
 	bone: [watchWeapon(10), new Weapon(1), new Breakable(75), usedWith("engine_part"), opens("chest_tools", "chest_food")],
 	wood_beam: [BULKY, resource(59), TRANSFORMABLE, transformInto("wood2")],
 	metal_beam: [BULKY, resource(64), TRANSFORMABLE, transformInto("metal")],
@@ -760,7 +772,7 @@ const items = {
 	chest_christmas_3: [EVENT_ITEM, OPENABLE, openGives("chest_christmas_2", "omg_this_will_kill_you")],
 	chest_christmas_2: [EVENT_ITEM, OPENABLE, openGives("chest_christmas_1", "xmas_gift")],
 	chest_christmas_1: [EVENT_ITEM, OPENABLE, openGives("rp_letter")],
-	christmas_candy: [apSource(8), EVENT_ITEM, mayCause("status_addict", "status_infection", "status_terror", "death")],
+	christmas_candy: [apSource(8), EVENT_ITEM, new MayCause({status_addict: (13/123*100).toFixed(1), status_infection: (29/123*100).toFixed(1), status_terror: (57/123*100).toFixed(1), death: (2/123*100).toFixed(2)})],
 	pc: [BULKY, watchWeapon(11), HOME_ITEM, new Weapon(1), decoration(3), new Breakable(50), opens("chest_tools")],
 	safe: [BULKY, OPENABLE, openGives(["cutcut", "rp_book", "meca_parts", "chainsaw_part", "mixergun_part", "lawn_part", "pocket_belt", "big_pgun_part", "watergun_opt_part", "rp_letter", "rp_scroll", "rp_manual", "rp_scroll", "rp_book2", "rp_book", "rp_sheets", "pilegun_upkit"]), openWith("small_pa")],
 	rp_twin: [RP_ITEM],
@@ -768,14 +780,14 @@ const items = {
 	water_can_1: [BULKY, watchWeapon(11), apSource(6), WATER, TO_ASSEMBLE, assemble("water", "water_can_2"), causes("status_hasdrunk"), new Becomes("water_can_empty")],
 	water_can_2: [BULKY, watchWeapon(11), apSource(6), WATER, TO_ASSEMBLE, assemble("water", "water_can_3"), causes("status_hasdrunk"), new Becomes("water_can_1")],
 	water_can_3: [BULKY, watchWeapon(11), apSource(6), WATER, causes("status_hasdrunk"), new Becomes("water_can_2")],
-	beta_drug_bad: [apSource("0, 6, 7"), DRUG, mayCause("status_drugged", "status_addict", "status_terror")],
+	beta_drug_bad: [apSource("0, 6, 7"), DRUG, new MayCause({status_drugged: 50, status_addict: 20, status_terror: 20})],
 	april_drug: [EVENT_ITEM, COOKABLE],
 	fruit_sub_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("fruit_sub_part", "fruit_part"), usedWith("fruit_sub_part", "fruit_part")],
 	fruit_part: [TO_ASSEMBLE, assemble("fruit_sub_part", "fruit")],
 	flesh_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("flesh_part", "flesh"), usedWith("flesh_part")],
 	flesh: [new ControlRecovery(40)],
 	pharma_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("pharma_part", ["xanax", "drug", "drug_hero", "pharma", "drug_water", "drug_random", "disinfect", "water_cleaner"]), usedWith("pharma_part")],
-	fruit: [apSource(6), FOOD, COOKABLE, POISONABLE, poisonableWith("poison"), causes("status_haseaten"), mayCause("status_ghoul")],
+	fruit: [apSource(6), FOOD, COOKABLE, POISONABLE, poisonableWith("poison"), causes("status_haseaten"), new MayCause({status_ghoul: 10})],
 	water_cup_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("water_cleaner", "water_cup")],
 	water_cup: [apSource(6), WATER, causes("status_hasdrunk")],
 	banned_note: [SHUNNED_ITEM],
@@ -796,13 +808,13 @@ const items = {
 	firework_powder: [HOME_ITEM, resource(1), decoration(5)],
 	firework_tube: [BULKY, HOME_ITEM, resource(1), decoration(2)],
 	firework_box: [BULKY, HOME_ITEM, resource(1), decoration(3)],
-	cadaver: [BULKY, apSource("6, 7"), FOOD, HEAL_ITEM, COOKABLE, heals("wound1", "infection"), causes("status_haseaten"), mayCause("status_infection", "status_ghoul")],
+	cadaver: [BULKY, apSource("6, 7"), FOOD, HEAL_ITEM, COOKABLE, heals("wound1", "infection"), causes("status_haseaten"), new MayCause({status_infection: 10, status_ghoul: 90})],
 	cadaver_remains: [BULKY],
 	smoke_bomb: [new Special("Camoufle les actions de la zone")],
 	pumpkin_raw: [BULKY, EVENT_ITEM, TO_ASSEMBLE, assemble("small_knife", "pumpkin_off")],
 	pumpkin_off: [HOME_ITEM, decoration(5), EVENT_ITEM, TO_ASSEMBLE, assemble(["lights", "pharma"], "pumpkin_on")],
 	pumpkin_on: [DEFENSE_ITEM, HOME_ITEM, decoration(15), EVENT_ITEM],
-	sand_ball: [EVENT_ITEM, mayCause("status_wound1")],
+	sand_ball: [EVENT_ITEM, new MayCause({status_wound1: 10})],
 	omg_this_will_kill_you: [apSource(6), FOOD, EVENT_ITEM, COOKABLE, causes("status_haseaten")],
 	bplan_c: [BLUEPRINT],
 	bplan_u: [BLUEPRINT],
@@ -842,11 +854,11 @@ const items = {
 	wire: [TO_ASSEMBLE, assemble(["meca_parts", "explo", "rustine"], "claymo"), usedWith("diode", "staff2")],
 	oilcan: [TO_ASSEMBLE, assemble(["vodka", "fungus"], "hmbrew"), usedWith("staff2")],
 	lens: [TO_ASSEMBLE, assemble("tube", "scope"), usedWith("ryebag")],
-	angryc: [HOME_ITEM, new Weapon('?', 66), ANIMAL, decoration(1), butcher("flesh", "flesh"), mayCause("status_wound1"), new Becomes("small_remove")],
+	angryc: [HOME_ITEM, new Weapon('?', 66), ANIMAL, decoration(1), butcher("flesh", "flesh"), new MayCause({status_wound1: 33}), new Becomes("small_remove")],
 	claymo: [watchWeapon(50), TO_ASSEMBLE, assemble("door_carpet", "trapma")],
 	diode: [TO_ASSEMBLE, assemble(["maglite_2", "wire", "tube", "meca_parts"], "lpoint")],
 	guitar: [watchWeapon(19), HOME_ITEM, apSource("0, 1, 2"), decoration(6), new Breakable()],
-	lsd: [apSource(6), mayCause("status_terror"), usedWith("chudol")],
+	lsd: [apSource("0, 6, 7"), new MayCause({status_drugged: 50, status_addict: 20, status_terror: 20}), usedWith("chudol")],
 	lpoint4: [new Weapon(2), new Becomes("lpoint3")],
 	lpoint3: [new Weapon(2), new Becomes("lpoint2")],
 	lpoint2: [new Weapon(2), new Becomes("lpoint1")],
