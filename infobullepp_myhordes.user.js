@@ -759,7 +759,7 @@ const items = {
 	water_can_3: [BULKY, watchWeapon(11), apSource(6), WATER, causes("status_hasdrunk"), new Becomes("water_can_2")],
 	beta_drug_bad: [apSource("0, 6, 7"), DRUG, mayCause("status_drugged", "status_addict", "status_terror")],
 	april_drug: [EVENT_ITEM, COOKABLE],
-	fruit_sub_pat: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("fruit_sub_part", "fruit_part"), usedWith("fruit_sub_part", "fruit_part")],
+	fruit_sub_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("fruit_sub_part", "fruit_part"), usedWith("fruit_sub_part", "fruit_part")],
 	fruit_part: [TO_ASSEMBLE, assemble("fruit_sub_part", "fruit")],
 	flesh_part: [SHUNNED_ITEM, TO_ASSEMBLE, assemble("flesh_part", "flesh"), usedWith("flesh_part")],
 	flesh: [new ControlRecovery(40)],
