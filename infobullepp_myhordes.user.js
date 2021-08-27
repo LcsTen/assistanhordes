@@ -625,7 +625,7 @@ const items = {
 	coffee_machine_part: [BULKY, TO_ASSEMBLE, assemble(["meca_parts", "metal", "rustine", "tube", "electro", "cyanure"], "coffee_machine")],
 	electro: [resource(13), usedWith("music_part", "mixergun_part", "coffee_machine_part", "pilegun_upkit")],
 	chest_citizen: [BULKY, OPENABLE, openGives(["pile", "lights", "pharma", "radio_off"])],
-	drug_water: [DRUG, HEAL_ITEM, heals("thirsty", "dehyd"), causes("status_drugged"), usedWith("infect_poison_part")],
+	drug_water: [DRUG, HEAL_ITEM, heals("thirst1", "thirst2"), causes("status_drugged"), usedWith("infect_poison_part")],
 	radio_off: [TO_ASSEMBLE, assemble("pile", "radio_on")],
 	radio_on: [watchWeapon(-10), HOME_ITEM, resource(3), decoration(2)],
 	cyanure: [causes("death"), usedWith("coffee_machine_part")],
