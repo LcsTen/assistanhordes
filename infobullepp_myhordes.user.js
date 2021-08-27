@@ -502,6 +502,21 @@ class Becomes extends Info {
 	}
 };
 
+class Breakable extends Info {
+	constructor(proba = null){
+		super();
+		this.proba = proba;
+	}
+
+	style(){
+		return ["item-tag-dangerous", "item-tag-breakable"];
+	}
+
+	display(){
+		return "Objet cassable"+(this.proba !== null ? ` <em>(${this.proba}%)</em>` : "");
+	}
+};
+
 class Special extends Info {
 	constructor(explanation){
 		super();
@@ -524,7 +539,6 @@ const FOOD = new SimpleInfo("item-tag-food", "Nourriture");
 const COOKABLE = new SimpleInfo("item-tag-cookable", "Objet cuisinable");
 const TO_ASSEMBLE = new SimpleInfo("item-tag-to-assemble", "Objet à assembler");
 const BULKY = new SimpleInfo("item-tag-heavy", "Objet encombrant", NEW_TOOLTIP);
-const BREAKABLE = new SimpleInfo(["item-tag-dangerous", "item-tag-breakable"], "Objet cassable");
 const DRUG = new SimpleInfo("item-tag-drug", "Drogue");
 const HEAL_ITEM = new SimpleInfo("item-tag-heal-item", "Objet de soin");
 const HOME_ITEM = new SimpleInfo("item-tag-deco", "Aménagement de maison", NEW_TOOLTIP);
@@ -552,17 +566,17 @@ const items = {
 	water_gun_opt_empty: [TO_ASSEMBLE, assemble("water", "water_gun_opt_5")],
 	mixergun: [watchWeapon(9), weapon("1+"), opens("chest_tools", "chest_food"), new Becomes("mixergun_empty", 40)],
 	chainsaw: [BULKY, watchWeapon(30), weapon("3+"), new Becomes("chainsaw_empty", 30)],
-	lawn: [BULKY, watchWeapon(15), weapon("2+"), BREAKABLE, opens("chest_tools")],
-	wrench: [watchWeapon(2), weapon("0-1"), BREAKABLE, opens("chest_tools", "chest_food")],
-	screw: [watchWeapon(5), weapon("0-1"), BREAKABLE, opens("can", "chest", "chest_xl", "chest_tools", "chest_food", "catbox")],
+	lawn: [BULKY, watchWeapon(15), weapon("2+"), new Breakable(15), opens("chest_tools")],
+	wrench: [watchWeapon(2), weapon("0-1"), new Breakable(33), opens("chest_tools", "chest_food")],
+	screw: [watchWeapon(5), weapon("0-1"), new Breakable(50), opens("can", "chest", "chest_xl", "chest_tools", "chest_food", "catbox")],
 	staff: [watchWeapon(4), weapon("0-1"), opens("chest_tools", "chest_food"), new Becomes("item_staff2", 58)], // 70/120
-	knife: [watchWeapon(10), weapon("1+"), BREAKABLE, opens("chest_tools", "chest_food")],
-	cutcut: [watchWeapon(5), weapon("2+"), BREAKABLE, opens("chest_tools", "chest_food")],
-	small_knife: [watchWeapon(5), weapon("0-1"), BREAKABLE, usedWith("pumpkin_raw"), opens("chest_tools")],
-	swiss_knife: [watchWeapon(10), weapon("0-1"), BREAKABLE, opens("can", "chest", "chest_xl", "chest_tools", "chest_food")],
-	cutter: [watchWeapon(10), weapon("0-1"), BREAKABLE, usedWith("pet_snake2"), opens("chest_tools", "chest_food")],
+	knife: [watchWeapon(10), weapon("1+"), new Breakable(20), opens("chest_tools", "chest_food")],
+	cutcut: [watchWeapon(5), weapon("2+"), new Breakable(25), opens("chest_tools", "chest_food")],
+	small_knife: [watchWeapon(5), weapon("0-1"), new Breakable(50), usedWith("pumpkin_raw"), opens("chest_tools")],
+	swiss_knife: [watchWeapon(10), weapon("0-1"), new Breakable(50), opens("can", "chest", "chest_xl", "chest_tools", "chest_food")],
+	cutter: [watchWeapon(10), weapon("0-1"), new Breakable(90), usedWith("pet_snake2"), opens("chest_tools", "chest_food")],
 	cart: [BULKY, watchWeapon(20), backpackExtension(2)],
-	can_opener: [watchWeapon(4), weapon("0-1"), BREAKABLE, opens("can", "chest", "chest_xl", "chest_tools", "chest_food", "catbox")],
+	can_opener: [watchWeapon(4), weapon("0-1"), new Breakable(100), opens("can", "chest", "chest_xl", "chest_tools", "chest_food", "catbox")],
 	bag: [backpackExtension(1)],
 	lights: [TO_ASSEMBLE, assemble("wood_bad", "torch"), usedWith("pumpkin_off")],
 	xanax: [DRUG, HEAL_ITEM, heals("terror"), causes("status_drugged")],
@@ -649,12 +663,12 @@ const items = {
 	tagger: [DISCOVER_ZONE],
 	flare: [watchWeapon(-10)],
 	jerrygun: [weapon("1+"), new Becomes("item_jerrygun_empty", 15)],
-	chair_basic: [BULKY, watchWeapon(8), HOME_ITEM, weapon("0-1"), decoration(2), BREAKABLE, opens("chest_tools")],
+	chair_basic: [BULKY, watchWeapon(8), HOME_ITEM, weapon("0-1"), decoration(2), new Breakable(30), opens("chest_tools")],
 	gun: [HOME_ITEM, decoration(5)],
 	machine_gun: [HOME_ITEM, decoration(15)],
 	deto: [resource(3), TO_ASSEMBLE, assemble(["explo", "grenade_empty", "rustine"], "bgrenade_empty"), usedWith("watergun_opt_part", "engine_part")],
 	concrete: [BULKY, TO_ASSEMBLE, assemble("water", "concrete_wall")],
-	concrete_wall: [BULKY, DEFENSE_ITEM, HOME_ITEM, resource(19), weapon("1+"), BREAKABLE],
+	concrete_wall: [BULKY, DEFENSE_ITEM, HOME_ITEM, resource(19), weapon("1+"), new Breakable(20)],
 	drug_random: [apSource("0, 6, 7"), DRUG, mayCause("status_drugged", "status_addict", "status_terror")],
 	disinfect: [DRUG, HEAL_ITEM, heals("infection"), causes("status_drugged", "status_immune")],
 	digger: [new ClearDust("1-5")],
@@ -676,7 +690,7 @@ const items = {
 	watergun_opt_part: [TO_ASSEMBLE, assemble(["grenade_empty", "rustine", "tube", "deto"], "watergun_opt_empty")],
 	vibr_empty: [TO_ASSEMBLE, assemble("pile", "vibr")],
 	bone_meat: [watchWeapon(10), resource(1), apSource(6), FOOD, COOKABLE, causes("status_haseaten"), mayCause("status_infection", "status_ghoul")],
-	bone: [watchWeapon(10), weapon("0-1"), BREAKABLE, usedWith("engine_part"), opens("chest_tools", "chest_food")],
+	bone: [watchWeapon(10), weapon("0-1"), new Breakable(75), usedWith("engine_part"), opens("chest_tools", "chest_food")],
 	wood_beam: [BULKY, resource(59), TRANSFORMABLE, transformInto("wood2")],
 	metal_beam: [BULKY, resource(64), TRANSFORMABLE, transformInto("metal")],
 	metal_bad: [TRANSFORMABLE, transformInto("metal")],
@@ -702,15 +716,15 @@ const items = {
 	radius_mk2: [DISCOVER_ZONE, new Becomes("radius_mk2_part", 33)],
 	repair_one: [REPAIR],
 	engine_part: [BULKY, TO_ASSEMBLE, assemble(["meca_parts", "metal", "rustine", "deto", "bone"], "engine")],
-	machine_1: [BULKY, watchWeapon(19), HOME_ITEM, weapon("1+"), decoration(2), BREAKABLE],
-	machine_2: [BULKY, watchWeapon(15), HOME_ITEM, weapon("1+"), decoration(2), BREAKABLE],
-	machine_3: [BULKY, watchWeapon(15), HOME_ITEM, weapon("1+"), decoration(2), BREAKABLE],
+	machine_1: [BULKY, watchWeapon(19), HOME_ITEM, weapon("1+"), decoration(2), new Breakable(30)],
+	machine_2: [BULKY, watchWeapon(15), HOME_ITEM, weapon("1+"), decoration(2), new Breakable(30)],
+	machine_3: [BULKY, watchWeapon(15), HOME_ITEM, weapon("1+"), decoration(2), new Breakable(50)],
 	rp_letter: [RP_ITEM],
 	rp_scroll: [RP_ITEM],
 	rp_manual: [RP_ITEM],
 	rp_book2: [RP_ITEM],
 	rp_sheets: [RP_ITEM],
-	chain: [watchWeapon(8), resource(2), weapon("0-1"), BREAKABLE, opens("chest_tools", "chest_food")],
+	chain: [watchWeapon(8), resource(2), weapon("0-1"), new Breakable(30), opens("chest_tools", "chest_food")],
 	dish: [watchWeapon(4), apSource(6), FOOD, causes("status_haseaten")],
 	dish_tasty: [watchWeapon(6), apSource(7), FOOD, causes("status_haseaten")],
 	home_box_xl: [BULKY, watchWeapon(8), HOME_ITEM, new Special("Améliore la taille du coffre")],
@@ -743,14 +757,14 @@ const items = {
 	food_candies: [apSource(7), FOOD, causes("status_haseaten")],
 	out_def: [CAMPING_ITEM],
 	torch: [DEFENSE_ITEM, watchWeapon(15), HOME_ITEM, weapon(1), usedWith("chama"), new Becomes("item_torch_off")],
-	torch_off: [watchWeapon(4), weapon("0-1"), BREAKABLE],
+	torch_off: [watchWeapon(4), weapon("0-1"), new Breakable(50)],
 	chama: [TO_ASSEMBLE, COOKABLE, assemble("torch", "chama_tasty")],
 	chama_tasty: [apSource(7), FOOD, causes("status_haseaten")],
 	chest_christmas_3: [EVENT_ITEM, OPENABLE, openGives("chest_christmas_2", "omg_this_will_kill_you")],
 	chest_christmas_2: [EVENT_ITEM, OPENABLE, openGives("chest_christmas_1", "xmas_gift")],
 	chest_christmas_1: [EVENT_ITEM, OPENABLE, openGives("rp_letter")],
 	christmas_candy: [apSource(8), EVENT_ITEM, mayCause("status_addict", "status_infection", "status_terror", "death")],
-	pc: [BULKY, watchWeapon(11), HOME_ITEM, weapon("1+"), decoration(3), BREAKABLE, opens("chest_tools")],
+	pc: [BULKY, watchWeapon(11), HOME_ITEM, weapon("1+"), decoration(3), new Breakable(50), opens("chest_tools")],
 	safe: [BULKY, OPENABLE, openGives(["cutcut", "rp_book", "meca_parts", "chainsaw_part", "mixergun_part", "lawn_part", "pocket_belt", "big_pgun_part", "watergun_opt_part", "rp_letter", "rp_scroll", "rp_manual", "rp_scroll", "rp_book2", "rp_book", "rp_sheets", "pilegun_upkit"]), openWith("small_pa")],
 	rp_twin: [RP_ITEM],
 	water_can_empty: [BULKY, TO_ASSEMBLE, assemble("water", "water_can_1")],
@@ -834,7 +848,7 @@ const items = {
 	angryc: [HOME_ITEM, weapon('?'), ANIMAL, decoration(1), butcher("flesh", "flesh"), mayCause("status_wound1"), new Becomes("small_remove")],
 	claymo: [watchWeapon(50), TO_ASSEMBLE, assemble("door_carpet", "trapma")],
 	diode: [TO_ASSEMBLE, assemble(["maglite_2", "wire", "tube", "meca_parts"], "lpoint")],
-	guitar: [watchWeapon(19), HOME_ITEM, apSource("0, 1, 2"), decoration(6), BREAKABLE],
+	guitar: [watchWeapon(19), HOME_ITEM, apSource("0, 1, 2"), decoration(6), new Breakable()],
 	lsd: [apSource(6), mayCause("status_terror"), usedWith("chudol")],
 	lpoint4: [weapon(2), new Becomes("lpoint3")],
 	lpoint3: [weapon(2), new Becomes("lpoint2")],
@@ -868,7 +882,7 @@ const items = {
 	fest: [apSource(6), ALCOHOL, causes("status_drunk")],
 	bretz: [apSource(6), FOOD, COOKABLE, causes("status_haseaten")],
 	leprechaun_suit: [],
-	hurling_stick: [weapon("0-1"), BREAKABLE],
+	hurling_stick: [weapon("0-1"), new Breakable(15)],
 	guiness: [apSource(6), ALCOHOL, causes("status_drunk")]
 };
 
