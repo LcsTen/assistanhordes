@@ -936,7 +936,7 @@ function createNewTooltips(){
 }
 
 function main(){
-	document.querySelectorAll(".item").forEach(item => {
+	document.querySelectorAll(".item:not(.tooltip)").forEach(item => {
 		let itemName = item.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
 		let itemInfo = items[itemName];
 		if(itemInfo === undefined){
