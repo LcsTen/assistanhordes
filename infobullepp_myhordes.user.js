@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.111
+// @version  0.1111
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -10,7 +10,7 @@
 
 // Image retrievement related functions and constants
 
-const GITLAB_IMG_BASE_URL = "https://gitlab.com/eternal-twin/myhordes/myhordes/-/raw/master/assets/img/";
+const GITLAB_IMG_BASE_URL = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/";
 const ITEM_IMG_BASE_URL = GITLAB_IMG_BASE_URL+"item/item_";
 const ICON_IMG_BASE_URL = GITLAB_IMG_BASE_URL+"icons/";
 const STATUS_IMG_BASE_URL = GITLAB_IMG_BASE_URL+"status/status_";
@@ -984,41 +984,41 @@ div.item-tag.item-tag-information {
 }
 
 div.item-tag.item-tag-information.item-tag-help::after {
-	background: url(/build/images/assets/img/icons/small_help.d63bd512.gif) 50%/contain no-repeat;
+	background: url(${ICON_IMG_BASE_URL}small_help.gif) 50%/contain no-repeat;
 }
 
 div.item-tag.item-tag-information.item-tag-more::after {
-	background: url(/build/images/beyond/more.ea475a15.gif) 50%/contain no-repeat;
+	background: url(${GITLAB_IMG_BASE_URL}beyond/more.gif) 50%/contain no-repeat;
 }`;
 
 let tags = {
-	"resource": "/build/images/pictos/r_buildr.de837d8d.gif",
-	"ap-source": "/build/images/assets/img/icons/ap_small_fr.7d63b13c.gif",
-	"water": "/build/images/item/item_water.74ce2545.gif",
-	"poisonable": ITEM_IMG_BASE_URL+"poison.gif", // TODO: Find MyHordes key
-	"openable": "/build/images/actions/sort.f1ebe42c.gif",
-	"food": "/build/images/item/item_meat.dc317c3f.gif",
-	"cookable": "/build/images/item/item_dish_tasty.3531850c.gif",
-	"to-assemble": "/build/images/pictos/r_share.59a1e27d.gif",
-	"breakable": "/build/images/icons/Small_broken.09de7772.gif",
-	"backpack-extension": "/build/images/tags/tag_4.169e832c.gif",
-	"drug": "/build/images/pictos/r_drug.a918610e.gif",
-	"heal-item": STATUS_IMG_BASE_URL+"healed.gif", // TODO: Find MyHordes key
-	"decoration": ITEM_IMG_BASE_URL+"lamp_on.gif", // TODO: Find MyHordes key
-	"camping-item": "/build/images/pictos/r_camp.e5d0556a.gif",
-	"animal": "/build/images/item/item_pet_cat.e2a4090e.gif",
-	"transformable": "/build/images/building/small_refine.da6e4971.gif",
-	"alcohol": "/build/images/item/item_vodka.c3bb28a3.gif",
-	"blueprint": "/build/images/item/item_bplan_r.15b2ee0f.gif",
-	"ruin-item": "/build/images/pictos/r_ruine.6dbe2027.gif",
-	"rp-item": "/build/images/icons/small_rp.6c89c828.gif",
-	"event-item": "/build/images/pictos/r_heroac.59c6f380.gif",
-	"shunned-item": "/build/images/pictos/r_ban.0b3824e0.gif",
-	"clear-dust": "/build/images/pictos/r_digger.0cf1e937.gif",
-	"control-recovery": ITEM_IMG_BASE_URL+"flash.gif", // TODO: Find MyHordes key
-	"repair": ITEM_IMG_BASE_URL+"repair_kit.gif", // TODO: Find MyHordes key
-	"discover-zone": ITEM_IMG_BASE_URL+"radius_mk2.gif", // TODO: Find MyHordes key
-	"purifiable": ITEM_IMG_BASE_URL+"soul_blue.gif" // TODO: Find MyHordes key
+	"resource": GITLAB_IMG_BASE_URL+"pictos/r_buildr.gif",
+	"ap-source": ICON_IMG_BASE_URL+"ap_small_fr.gif",
+	"water": ITEM_IMG_BASE_URL+"water.gif",
+	"poisonable": ITEM_IMG_BASE_URL+"poison.gif",
+	"openable": GITLAB_IMG_BASE_URL+"actions/sort.gif",
+	"food": ITEM_IMG_BASE_URL+"meat.gif",
+	"cookable": ITEM_IMG_BASE_URL+"dish_tasty.gif",
+	"to-assemble": GITLAB_IMG_BASE_URL+"pictos/r_share.gif",
+	"breakable": ICON_IMG_BASE_URL+"Small_broken.gif",
+	"backpack-extension": GITLAB_IMG_BASE_URL+"tags/tag_4.gif",
+	"drug": GITLAB_IMG_BASE_URL+"pictos/r_drug.gif",
+	"heal-item": STATUS_IMG_BASE_URL+"healed.gif",
+	"decoration": ITEM_IMG_BASE_URL+"lamp_on.gif",
+	"camping-item": GITLAB_IMG_BASE_URL+"pictos/r_camp.gif",
+	"animal": ITEM_IMG_BASE_URL+"pet_cat.gif",
+	"transformable": GITLAB_IMG_BASE_URL+"building/small_refine.gif",
+	"alcohol": ITEM_IMG_BASE_URL+"vodka.gif",
+	"blueprint": ITEM_IMG_BASE_URL+"bplan_r.gif",
+	"ruin-item": GITLAB_IMG_BASE_URL+"pictos/r_ruine.gif",
+	"rp-item": ICON_IMG_BASE_URL+"small_rp.gif",
+	"event-item": GITLAB_IMG_BASE_URL+"pictos/r_heroac.gif",
+	"shunned-item": GITLAB_IMG_BASE_URL+"pictos/r_ban.gif",
+	"clear-dust": GITLAB_IMG_BASE_URL+"pictos/r_digger.gif",
+	"control-recovery": ITEM_IMG_BASE_URL+"flash.gif",
+	"repair": ITEM_IMG_BASE_URL+"repair_kit.gif",
+	"discover-zone": ITEM_IMG_BASE_URL+"radius_mk2.gif",
+	"purifiable": ITEM_IMG_BASE_URL+"soul_blue.gif"
 };
 
 for(let tag in tags){
