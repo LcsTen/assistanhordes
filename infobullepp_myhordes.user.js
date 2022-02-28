@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.1111
+// @version  0.11111
 // @grant    none
-// @match    https://myhordes.de/jx/*
-// @match    https://myhordes.eu/jx/*
+// @match    https://myhordes.de/*
+// @match    https://myhordes.eu/*
 // ==/UserScript==
 
 "use strict";
