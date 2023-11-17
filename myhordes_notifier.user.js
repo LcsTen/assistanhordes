@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name     MyHordes Notifier
-// @version  0.1
+// @version  0.2
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
 // @match    https://armageddhordes.adri-web.dev/jx/*
 // ==/UserScript==
 
-let iconUrl = document.querySelector("link[rel='shortcut icon']").href;
+let iconUrl = document.querySelector("link[rel='icon'][sizes='48x48']").href;
 let gameName = document.title;
 
 let blacklist = localStorage.notifierBlacklist;

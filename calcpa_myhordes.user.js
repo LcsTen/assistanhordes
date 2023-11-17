@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.1
+// @version  0.2
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -20,7 +20,7 @@ const RANDOM_GAME = ["dice", "cards"];
 let armageddhordes = document.title.includes("Armagedd'Hordes");
 let itemSrcPrefix = "/build/images/item/item_";
 let apMultiplier = 1 + armageddhordes;
-let apImg = '<img src="/build/images/assets/img/icons/ap_small_fr.7d63b13c.gif" alt="AP">';
+let apImg = '<img src="https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/ap_small_fr.gif" alt="AP">';
 
 function getImgOf(item){
 	return `<img src="${itemSrcPrefix}${item.name}.${item.key}.gif" alt="${item.name}">`;

@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11111
+// @version  0.11112
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @grant    unsafeWindow
 // ==/UserScript==
 
 "use strict";
@@ -262,7 +263,7 @@ function openWith(...ways){
 class WatchWeapon extends Info {
 	constructor(nb){
 		super();
-		if(!Number.isNaN(+nb) || nb > 0){
+		if(Number.isNaN(+nb) || nb > 0){
 			nb = '+'+nb;
 		}
 		this.nb = nb;
@@ -306,6 +307,10 @@ class Assemble extends InfoMore {
 		super();
 		this.others = others;
 		this.results = results;
+	}
+
+	style(){
+		return [...super.style(), "item-tag-long-lines"];
 	}
 	
 	display(item){
@@ -910,7 +915,7 @@ function displayInfo(thisItem, info){
 }
 
 function createNewTooltips(){
-	document.querySelectorAll(".tool").forEach(tool => {
+	document.querySelectorAll(".tool:not(.ib-tooltipped)").forEach(tool => {
 		let itemName = tool.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
 		let itemInfo = items[itemName];
 		let itemTitle = tool.innerText.trim();
@@ -932,22 +937,23 @@ function createNewTooltips(){
 		}
 		tool.appendChild(itemTooltip);
 		unsafeWindow.$.html.handleTooltip(itemTooltip);
+		tool.classList.add("ib-tooltipped");
 	});
 }
 
 function main(){
-	document.querySelectorAll(".item:not(.tooltip)").forEach(item => {
+	for(let item of unsafeWindow.document.querySelectorAll(".item:not(hordes-tooltip)")){
 		let itemName = item.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
 		let itemInfo = items[itemName];
 		if(itemInfo === undefined){
 			itemInfo = items[item.querySelector("h1")?.textContent.trim()];
 		}
 		if(itemInfo === undefined){
-			return;
+			continue;
 		}
-		let itemTooltip = item.querySelector("div.tooltip");
+		let itemTooltip = item.querySelector("hordes-tooltip");
 		if(itemTooltip === null){
-			return;
+			continue;
 		}
 		let tooltipInfos = itemTooltip.querySelectorAll("div");
 		for(let i = 0;i < tooltipInfos.length;i++){
@@ -957,10 +963,10 @@ function main(){
 		}
 		for(let info of itemInfo){
 			if(info.when() & EXISTING_TOOLTIP){
-				itemTooltip.appendChild(displayInfo(itemName, info));
+				itemTooltip.originalChildren.push(displayInfo(itemName, info));
 			}
 		}
-	});
+	}
 	createNewTooltips();
 }
 
@@ -1036,11 +1042,12 @@ document.head.appendChild(stylesheet);
 new MutationObserver((mutations, observer) => {
 	if(document.querySelector(".item") !== null){
 		try{main()}catch(e){console.error(e);};
-	}
-	let logContent = document.querySelector(".log-content");
-	if(logContent !== null){
-		new MutationObserver(() => {
-			createNewTooltips();
-		}).observe(logContent, {childList: true});
+		setTimeout(() => {
+			let logContent = document.querySelector(".log-content");
+			if(logContent !== null){
+				createNewTooltips();
+				new MutationObserver(createNewTooltips).observe(logContent, {childList: true});
+			}
+		}, 1000);
 	}
 }).observe(document.querySelector("#content"), {childList: true});
