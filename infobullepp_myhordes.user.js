@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11112
+// @version  0.11113
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
@@ -914,30 +914,39 @@ function displayInfo(thisItem, info){
 	return div;
 }
 
+function createNewTooltip(target, itemName, itemTitle){
+	let itemInfo = items[itemName];
+	if(itemInfo === undefined){
+		itemInfo = items[itemTitle];
+	}
+	if(itemInfo === undefined){
+		return;
+	}
+	let itemTooltip = document.createElement("div");
+	itemTooltip.classList.add("tooltip", "normal");
+	let h1 = document.createElement("h1");
+	h1.innerHTML = itemTitle + "  " + imageOfItem(itemName);
+	itemTooltip.appendChild(h1);
+	for(let info of itemInfo){
+		if(info.when() & NEW_TOOLTIP){
+			itemTooltip.appendChild(displayInfo(itemName, info));
+		}
+	}
+	target.appendChild(itemTooltip);
+	unsafeWindow.$.html.handleTooltip(itemTooltip);
+	target.classList.add("ib-tooltipped");
+}
+
 function createNewTooltips(){
-	document.querySelectorAll(".tool:not(.ib-tooltipped)").forEach(tool => {
+	document.querySelectorAll(".tool:not(.ib-tooltipped), .workshop span.icon:not(.ib-tooltipped)").forEach(tool => {
 		let itemName = tool.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
-		let itemInfo = items[itemName];
 		let itemTitle = tool.innerText.trim();
-		if(itemInfo === undefined){
-			itemInfo = items[itemTitle];
-		}
-		if(itemInfo === undefined){
-			return;
-		}
-		let itemTooltip = document.createElement("div");
-		itemTooltip.classList.add("tooltip", "normal");
-		let h1 = document.createElement("h1");
-		h1.innerHTML = itemTitle + "  " + imageOfItem(itemName);
-		itemTooltip.appendChild(h1);
-		for(let info of itemInfo){
-			if(info.when() & NEW_TOOLTIP){
-				itemTooltip.appendChild(displayInfo(itemName, info));
-			}
-		}
-		tool.appendChild(itemTooltip);
-		unsafeWindow.$.html.handleTooltip(itemTooltip);
-		tool.classList.add("ib-tooltipped");
+		createNewTooltip(tool, itemName, itemTitle);
+	});
+	document.querySelectorAll(".workshop .rw-1:not(.center) img:not(.ib-tooltipped)").forEach(img => {
+		let itemName = img.src.match(/[^/]\/item_([^.]*)\./)[1];
+		let itemTitle = img.alt;
+		createNewTooltip(img, itemName, itemTitle);
 	});
 }
 
