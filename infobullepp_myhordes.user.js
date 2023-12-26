@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11113
+// @version  0.11114
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
@@ -294,7 +294,7 @@ class Weapon extends Info {
 	}
 	
 	style(){
-		return "item-tag-weapon";
+		return "item-tag-weapon2";
 	}
 	
 	display(){
@@ -1033,7 +1033,8 @@ let tags = {
 	"control-recovery": ITEM_IMG_BASE_URL+"flash.gif",
 	"repair": ITEM_IMG_BASE_URL+"repair_kit.gif",
 	"discover-zone": ITEM_IMG_BASE_URL+"radius_mk2.gif",
-	"purifiable": ITEM_IMG_BASE_URL+"soul_blue.gif"
+	"purifiable": ITEM_IMG_BASE_URL+"soul_blue.gif",
+	"weapon2": ITEM_IMG_BASE_URL+"cutcut.gif"
 };
 
 for(let tag in tags){
