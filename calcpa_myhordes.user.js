@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.2
+// @version  0.3
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -79,7 +79,7 @@ function main(){
 	let randomGames = unique(intersect(inventory, RANDOM_GAME));
 	let coffees = intersect(inventory, ["coffee"]);
 	let lsd = intersect(inventory, ["lsd"]);
-	let isWounded = intersect(states, ["wound1", "wound2", "wound3", "wound4", "wound5", "wound6"]);
+	let isWounded = (intersect(states, ["wound1", "wound2", "wound3", "wound4", "wound5", "wound6"]).length !== 0);
 	let sportElec = intersect(inventory, ["sport_elec"]);
 	let stero = intersect(inventory, ["drug"]);
 	let twinoid = intersect(inventory, ["drug_hero"]);
