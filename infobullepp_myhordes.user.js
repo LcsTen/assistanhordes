@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11115
+// @version  0.11116
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
@@ -779,7 +779,7 @@ const items = {
 	chest_christmas_1: [EVENT_ITEM, OPENABLE, openGives("rp_letter")],
 	christmas_candy: [apSource(8), EVENT_ITEM, new MayCause({status_addict: (13/123*100).toFixed(1), status_infection: (29/123*100).toFixed(1), status_terror: (57/123*100).toFixed(1), death: (2/123*100).toFixed(2)})],
 	pc: [BULKY, watchWeapon(11), HOME_ITEM, new Weapon(1), decoration(3), new Breakable(50), opens("chest_tools")],
-	safe: [BULKY, OPENABLE, openGives(["cutcut", "rp_book", "meca_parts", "chainsaw_part", "mixergun_part", "lawn_part", "pocket_belt", "big_pgun_part", "watergun_opt_part", "rp_letter", "rp_scroll", "rp_manual", "rp_scroll", "rp_book2", "rp_book", "rp_sheets", "pilegun_upkit"]), openWith("small_pa")],
+	safe: [BULKY, OPENABLE, openGives(["cutcut", "rp_book", "meca_parts", "chainsaw_part", "mixergun_part", "lawn_part", "pocket_belt", "big_pgun_part", "watergun_opt_part", "rp_letter", "rp_scroll", "rp_manual", "rp_scroll", "rp_book2", "rp_book", "rp_sheets", "pilegun_upkit"]), openWith("ap_small_fr")],
 	rp_twin: [RP_ITEM],
 	water_can_empty: [BULKY, TO_ASSEMBLE, assemble("water", "water_can_1")],
 	water_can_1: [BULKY, watchWeapon(11), apSource(6), WATER, TO_ASSEMBLE, assemble("water", "water_can_2"), causes("status_hasdrunk"), new Becomes("water_can_empty")],
@@ -826,7 +826,7 @@ const items = {
 	bplan_r: [BLUEPRINT],
 	bplan_e: [BLUEPRINT],
 	bplan_box: [BULKY, OPENABLE, openGives("bplan_r")],
-	bplan_box_e: [BULKY, OPENABLE, openGives("bplan_e"), openWith("small_pa")],
+	bplan_box_e: [BULKY, OPENABLE, openGives("bplan_e"), openWith("ap_small_fr")],
 	egg: [apSource(7), FOOD, causes("status_haseaten")],
 	apple: [apSource(7), FOOD, causes("status_haseaten")],
 	boomfruit: [watchWeapon(8), resource(2), new Weapon("5-9"), new Becomes("small_remove")],
