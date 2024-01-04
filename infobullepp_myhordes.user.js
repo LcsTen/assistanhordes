@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11116
+// @version  0.11117
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
@@ -951,7 +951,7 @@ function createNewTooltips(){
 }
 
 function main(){
-	for(let item of unsafeWindow.document.querySelectorAll(".item:not(hordes-tooltip)")){
+	for(let item of unsafeWindow.document.querySelectorAll(".item:not(hordes-tooltip):not(.ib-tooltipped)")){
 		let itemName = item.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
 		let itemInfo = items[itemName];
 		if(itemInfo === undefined){
@@ -975,6 +975,7 @@ function main(){
 				itemTooltip.originalChildren.push(displayInfo(itemName, info));
 			}
 		}
+		item.classList.add("ib-tooltipped");
 	}
 	createNewTooltips();
 }
@@ -1049,15 +1050,33 @@ stylesheet.type = "text/css";
 stylesheet.innerText = infobulleppCSSRules;
 document.head.appendChild(stylesheet);
 
-new MutationObserver((mutations, observer) => {
-	if(document.querySelector(".item") !== null){
-		try{main()}catch(e){console.error(e);};
-		setTimeout(() => {
-			let logContent = document.querySelector(".log-content");
-			if(logContent !== null){
-				createNewTooltips();
-				new MutationObserver(createNewTooltips).observe(logContent, {childList: true});
+new MutationObserver(() => {
+	main();
+	let node;
+	if(node = document.querySelector("#beyond_desert_content")){
+		new MutationObserver(main).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#gma")){
+		new MutationObserver(main).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#beyond-log")){
+		new MutationObserver(() => {
+			if(node = document.querySelector(".log-content")){
+				new MutationObserver(createNewTooltips).observe(node, {childList: true});
 			}
-		}, 1000);
+		}).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#bank-log")){
+		new MutationObserver(() => {
+			if(node = document.querySelector(".log-content")){
+				new MutationObserver(createNewTooltips).observe(node, {childList: true});
+			}
+		}).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#header-rucksack-items")){
+		new MutationObserver(main).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#inventory_partial_html")){
+		new MutationObserver(main).observe(node, {childList: true});
 	}
 }).observe(document.querySelector("#content"), {childList: true});

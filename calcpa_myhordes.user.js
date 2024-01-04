@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.3
+// @version  0.4
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -60,7 +60,7 @@ function main(){
 		});
 	});
 	let states = [];
-	document.querySelectorAll("ul.status li img").forEach(item => {
+	document.querySelectorAll("#gma ul.status li img").forEach(item => {
 		let match = item.src.match(/status_([^.]*)\.([^.]*)/);
 		states.push({
 			name: match[1],
@@ -85,9 +85,12 @@ function main(){
 	let twinoid = intersect(inventory, ["drug_hero"]);
 	let christmasChoco = intersect(inventory, ["christmas_candy"]);
 	
-	let div = document.createElement("div");
-	div.id = "calcpa";
-	div.classList.add("note");
+	let div = document.querySelector("#calcpa");
+	if(div === null){
+		div = document.createElement("div");
+		div.id = "calcpa";
+		div.classList.add("note");
+	}
 	let summary = "";
 	let minAP = 0;
 	let maxAP = 0;
@@ -133,16 +136,24 @@ function main(){
 		}
 	}
 	if(minAP !== maxAP){
-		div.innerHTML += `Vous possédez de <strong>${minAP}</strong> à <strong>${maxAP}</strong> ${apImg} potentiels.`;
+		div.innerHTML = `Vous possédez de <strong>${minAP}</strong> à <strong>${maxAP}</strong> ${apImg} potentiels.`;
 	}else{
-		div.innerHTML += `Vous possédez <strong>${minAP}</strong> ${apImg} potentiels.`;
+		div.innerHTML = `Vous possédez <strong>${minAP}</strong> ${apImg} potentiels.`;
 	}
 	div.innerHTML += "<br>"+summary;
 	document.querySelector(".padded.cell.rw-8 .row .cell.rw-12").after(div);
 }
 
 new MutationObserver(() => {
-	if(document.querySelector("#calcpa") === null){
-		main();
+	main();
+	let node;
+	if(node = document.querySelector("#beyond_desert_content")){
+		new MutationObserver(main).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#header-rucksack-items")){
+		new MutationObserver(main).observe(node, {childList: true});
+	}
+	if(node = document.querySelector("#inventory_partial_html")){
+		new MutationObserver(main).observe(node, {childList: true});
 	}
 }).observe(document.querySelector("#content"), {childList: true});

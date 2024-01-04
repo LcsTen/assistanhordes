@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Countdown Displayer
-// @version  0.1
+// @version  0.2
 // @grant    none
 // @match    https://myhordes.de/jx/*
 // @match    https://myhordes.eu/jx/*
@@ -22,8 +22,8 @@ function updateTitle(text){
 	}
 }
 
-function main(observed){
-	updateTitle(observed.innerText);
+function observe(countdown){
+	updateTitle(countdown.innerText);
 	observer = new MutationObserver(mutations => {
 		for(let mutation of mutations){
 			for(let node of mutation.addedNodes){
@@ -31,15 +31,23 @@ function main(observed){
 			}
 		}
 	});
-	observer.observe(observed, {childList: true});
+	observer.observe(countdown, {childList: true});
 }
 
-new MutationObserver(() => {
+function main(){
 	let countdown = document.querySelector(toObserve);
 	if(countdown !== null && !countdown.classList.contains("CDObserved")){
 		observer?.disconnect();
 		countdown.classList.add("CDObserved");
-		main(countdown);
+		observe(countdown);
+	}
+}
+
+new MutationObserver(() => {
+	main();
+	let node;
+	if(node = document.querySelector("#beyond_desert_content")){
+		new MutationObserver(main).observe(node, {childList: true});
 	}
 }).observe(document.querySelector("#content"), {childList: true});
 
