@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11117
+// @version  0.11118
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
@@ -1059,14 +1059,7 @@ new MutationObserver(() => {
 	if(node = document.querySelector("#gma")){
 		new MutationObserver(main).observe(node, {childList: true});
 	}
-	if(node = document.querySelector("#beyond-log")){
-		new MutationObserver(() => {
-			if(node = document.querySelector(".log-content")){
-				new MutationObserver(createNewTooltips).observe(node, {childList: true});
-			}
-		}).observe(node, {childList: true});
-	}
-	if(node = document.querySelector("#bank-log")){
+	if(node = document.querySelector("hordes-log")){
 		new MutationObserver(() => {
 			if(node = document.querySelector(".log-content")){
 				new MutationObserver(createNewTooltips).observe(node, {childList: true});
