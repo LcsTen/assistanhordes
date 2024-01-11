@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.4
+// @version  0.5
 // @grant    none
-// @match    https://myhordes.de/jx/*
-// @match    https://myhordes.eu/jx/*
-// @match    https://armageddhordes.adri-web.dev/jx/*
+// @match    https://myhordes.de/*
+// @match    https://myhordes.eu/*
+// @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 
 "use strict";

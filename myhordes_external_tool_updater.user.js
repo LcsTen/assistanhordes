@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
-// @version  1.1
+// @version  1.2
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener
-// @match    https://myhordes.de/jx/*
-// @match    https://myhordes.eu/jx/*
+// @match    https://myhordes.de/*
+// @match    https://myhordes.eu/*
 // @match    https://bbh.fred26.fr/*
 // @match    https://gest-hordes2.eragaming.fr/*
 // @match    https://fatamorgana.md26.eu/map

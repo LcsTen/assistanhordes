@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name     Countdown Displayer
-// @version  0.2
+// @version  0.3
 // @grant    none
-// @match    https://myhordes.de/jx/*
-// @match    https://myhordes.eu/jx/*
-// @match    https://armageddhordes.adri-web.dev/jx/*
+// @match    https://myhordes.de/*
+// @match    https://myhordes.eu/*
+// @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 
 "use strict";
