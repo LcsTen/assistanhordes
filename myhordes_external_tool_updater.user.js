@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
-// @version  1.0
+// @version  1.1
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener
@@ -27,11 +27,15 @@ if(window.location.toString().match("https://myhordes.de/") || window.location.t
 	}
 
 	function refresh(){
+		let target = document.querySelector("#beyond_desert_content div.row-flex.v-center");
+		if(target === null){
+			return;
+		}
 		button = document.createElement("button");
 		updateButtonText();
 		button.style = "margin-top: 10px";
-		button.addEventListener("click", () => GM_setValue("update", GM_getValue("update", 0) + 1));
-		document.querySelector("div.row-flex.v-center").after(button);
+		button.addEventListener("click", () => GM_setValue("update", (GM_getValue("update", 0) + 1) % 2));
+		target.after(button);
 	}
 
 	new MutationObserver(() => {
@@ -45,6 +49,11 @@ if(window.location.toString().match("https://myhordes.de/") || window.location.t
 	GM_addValueChangeListener("bbh", updateButtonText);
 	GM_addValueChangeListener("gh", updateButtonText);
 	GM_addValueChangeListener("fm", updateButtonText);
+
+	GM_setValue("bbh", 0);
+	GM_setValue("gh", 0);
+	GM_setValue("fm", 0);
+	GM_setValue("ping", (GM_getValue("ping", 0) + 1) % 2);
 }else{
 	let site;
 	if(window.location.toString().match("https://bbh.fred26.fr/")){
@@ -67,9 +76,14 @@ if(window.location.toString().match("https://myhordes.de/") || window.location.t
 		}
 	}
 
+	function onPing(){
+		GM_setValue(site, GM_getValue(site, 0) + 1);
+	}
+
 	window.addEventListener("beforeunload", e => {
 		GM_setValue(site, GM_getValue(site, 0) - 1);
 	});
 	GM_setValue(site, GM_getValue(site, 0) + 1);
 	GM_addValueChangeListener("update", update);
+	GM_addValueChangeListener("ping", onPing);
 }
