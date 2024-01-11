@@ -32,8 +32,8 @@ automatic search finishes.
 
 ### MyHordes Notifier
 
-MyHordes Notifier displays the in-game notification on the desktop using the
-Notification API.
+MyHordes Notifier displays the in-game notifications on the desktop and notify
+about new messages using the Notification API.
 
 [Install MyHordes Notifier](/LcsTen/assistanhordes/raw/master/myhordes_notifier.user.js)
 
