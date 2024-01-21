@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
 // @version  0.1
+// @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener

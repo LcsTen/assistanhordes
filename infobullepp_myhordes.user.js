@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
 // @version  0.11118
+// @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*

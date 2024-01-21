@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
 // @version  1.2
+// @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener

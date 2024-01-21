@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     MyHordes Notifier
 // @version  0.4
+// @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @match    https://myhordes.de/*

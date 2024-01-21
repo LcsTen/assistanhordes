@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     Countdown Displayer
 // @version  0.3
+// @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
