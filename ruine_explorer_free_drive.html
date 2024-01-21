@@ -1,0 +1,16 @@
+<html>
+<head>
+	<title>Ruine Explorer Free Drive</title>
+</head>
+<body>
+	<div class="plane-type-exit"></div>
+	<div class="zone-plane-controls">
+		<button class="action-move" x-direction-x="-1" x-direction-y="0" onclick="document.querySelector('.plane-type-exit')?.classList.remove('plane-type-exit');">←</button>
+		<button class="action-move" x-direction-x="0" x-direction-y="1" onclick="document.querySelector('.plane-type-exit')?.classList.remove('plane-type-exit');">↑</button>
+		<button class="action-move" x-direction-x="1" x-direction-y="0" onclick="document.querySelector('.plane-type-exit')?.classList.remove('plane-type-exit');">→</button>
+		<button class="action-move" x-direction-x="0" x-direction-y="-1" onclick="document.querySelector('.plane-type-exit')?.classList.remove('plane-type-exit');">↓</button>
+	</div>
+	<div class="zone-plane-ui" style="position: absolute; top: 15%; width: 7%"></div>
+	<button id="stairs_button">Utiliser les escaliers</button>
+</body>
+</html>

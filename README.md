@@ -44,3 +44,11 @@ Gest'Hordes and Fata Morgana by clicking on a button. For it to work, these
 sites must be opened in another tab.
 
 [Install MyHordes External Tool Updater](/LcsTen/assistanhordes/raw/master/myhordes_external_tool_updater.user.js)
+
+### Ruine Explorer: Dug-Up
+
+Ruine Explorer: Dug-Up is an adaptation of the famous userscript, Ruine
+Explorer, which make ruin exploration easier by adding a minimap in the bottom
+left corner of the screen.
+
+[Install Ruine Explorer: Dug-Up](/LcsTen/assistanhordes/raw/master/ruine_explorer_dugup.user.js)
