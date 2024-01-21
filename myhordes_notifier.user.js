@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name     MyHordes Notifier
-// @version  0.3
+// @version  0.4
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
+
+"use strict";
 
 let iconUrl = document.querySelector("link[rel='icon'][sizes='48x48']").href;
 let gameName = document.title;
@@ -69,4 +71,5 @@ new MutationObserver(() => {
 	if(newMsg > 0 && !document.hasFocus()){
 		new Notification(gameName, {body: `Vous avez ${newMsg === 1 ? "un" : newMsg} nouveau${newMsg === 1 ? "" : "x"} message${newMsg === 1 ? "" : "s"}.`, icon: iconUrl});
 	}
+	GM_setValue("nbMsg", currentNbMsg);
 }).observe(document.querySelector("#postbox-new-msg-counter"), {childList: true});
