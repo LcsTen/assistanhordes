@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.1
+// @version  0.2
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -100,11 +100,9 @@ DIRECTIONS_IMG[NORTH | EAST | SOUTH] = withStyle(DIRECTIONS_IMG[EAST | SOUTH | W
 DIRECTIONS_IMG[NORTH | EAST | SOUTH | WEST] = svgFrom("<path d='M 10,0 v 10 h -10 v 80 h 10 v 10 h 80 v -10 h 10 v -80 h -10 v -10'></path><path stroke='black' stroke-width='5' d='M 10,0 v 10 h -10 m 0,80 h 10 v 10 m 80,0 v -10 h 10 m 0,-80 h -10 v -10'></path>");
 
 function imgFrom(src){
-	let res = document.createElement("span");
-	res.style = "position: absolute; top: 0; width: 100%; text-align: center; z-index: 1";
-	let img = document.createElement("img");
-	img.src = src;
-	res.appendChild(img);
+	let res = document.createElement("img");
+	res.style = "position: absolute; top: 18%; z-index: 1;height: 72%;width: 72%;left: 18%;";
+	res.src = src;
 	return res;
 }
 
@@ -114,13 +112,12 @@ DOORS_IMG[LOCKED_UNKNOWN] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myh
 DOORS_IMG[LOCKED_MAGNETIC] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_magneticKey.gif");
 DOORS_IMG[LOCKED_BUMP] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_bumpKey.gif");
 DOORS_IMG[LOCKED_CLASSIC] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_classicKey.gif");
-DOORS_IMG[STAIRS] = spanFrom("S"); // TODO: Find something nicer
-DOORS_IMG[ENTRANCE] = spanFrom("E");
+DOORS_IMG[STAIRS] = imgFrom("https://codeberg.org/LcsTen/assistanhordes/raw/master/stairs.png");
+DOORS_IMG[ENTRANCE] = imgFrom("https://codeberg.org/LcsTen/assistanhordes/raw/master/exit.png");
 
 const ZOMBIE_COLORS = ["white", "yellow", "orange", "red", "violet"];
 
-const PLAYER_POSITION_IMG = withStyle(imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_middot.gif"), "z-index: 2; animation: 0.5s blink ease infinite");
-PLAYER_POSITION_IMG.children[0].style = "width: 22px";
+const PLAYER_POSITION_IMG = withStyle(imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_middot.gif"), "z-index: 2; animation: 0.5s blink ease infinite; width: 100%; height: 100%; top: 0; left: 0");
 
 function invertMap(map){
 	let res = {};
@@ -222,7 +219,7 @@ let style = `
 let ruineExplorerPosition;
 let visibleFloor;
 let ruineExplorerFloorTxt;
-let ruineExplorerTBody;
+let mapGrid;
 
 function writeMap(){
 	let map = GM_getValue("map");
@@ -235,23 +232,23 @@ function writeMap(){
 
 	for(let i = 0; i < MAP_HEIGHT; i++){
 		for(let j = 0; j < MAP_WIDTH; j++){
-			let currentTd = ruineExplorerTBody.children[i].children[j];
+			let currentDiv = mapGrid.children[i*MAP_WIDTH + j];
 			let currentTile = map[visibleFloor][i][j];
-			currentTd.textContent = "";
-			currentTd.style.backgroundColor = null;
+			currentDiv.textContent = "";
+			currentDiv.style.backgroundColor = null;
 			if(currentTile.door !== NOTHING){
-				currentTd.appendChild(DOORS_IMG[currentTile.door].cloneNode(true));
+				currentDiv.appendChild(DOORS_IMG[currentTile.door].cloneNode(true));
 			}
 			if(currentTile.directions !== EMPTY){
 				let directions = DIRECTIONS_IMG[currentTile.directions].cloneNode(true);
 				directions.setAttribute("fill", ZOMBIE_COLORS[currentTile.zombies]);
-				currentTd.appendChild(directions);
+				currentDiv.appendChild(directions);
 			}
 		}
 	}
 	let position = GM_getValue("position");
 	if(position !== undefined && position[2] === visibleFloor){
-		ruineExplorerTBody.children[position[1]].children[position[0]].children[0].before(PLAYER_POSITION_IMG.cloneNode(true));
+		mapGrid.children[position[1]*MAP_WIDTH + position[0]].children[0].before(PLAYER_POSITION_IMG.cloneNode(true));
 	}
 }
 
@@ -376,7 +373,7 @@ function init(){
 	visibleFloor = position === undefined ? 0 : position[2];
 
 	let menu = document.createElement("div");
-	menu.style = "position: fixed; left: 2%; background-color: #cd9f6e; border-radius: 10px 10px 0px 0px; transition: bottom 0.5s linear";
+	menu.style = `position: fixed; left: 2%; background-color: rgb(205, 159, 110); border-radius: 10px 10px 0px 0px; transition: bottom 0.5s linear 0s; width: calc((100% - 950px)/2 - 4%); max-width: calc(${MAP_WIDTH}*22px);min-width: calc(${MAP_WIDTH}*11px);`;
 	let title = document.createElement("div");
 	title.style = "color: white; background-color: #714526; padding: 5px; border-radius: 10px 10px 0px 0px; text-align: center; cursor: pointer";
 	title.textContent = "Ruine Explorer";
@@ -401,13 +398,16 @@ function init(){
 
 	function resetMenuBottom(){
 		menu.classList.add("no-transition");
-		menu.style.bottom = (title.offsetHeight - menu.offsetHeight) + "px";
+		menu.style.bottom = (title.offsetHeight - Math.max(265, menu.offsetHeight)) + "px";
 		menu.classList.remove("no-transition");
 	}
 
 	if(window.location.href.match("https://myhordes.de/") || window.location.href.match("https://myhordes.eu/") || window.location.href.match("https://armageddhordes.adri-web.dev") || window.location.href.match("ruine_explorer_free_drive.html")){
 		let mappingBtns = document.createElement("div");
-		mappingBtns.style = "border-bottom: 1px solid black";
+		mappingBtns.style = "border-bottom: 1px solid black; display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%";
+
+		let doorsBtnGrp = document.createElement("span");
+		doorsBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
 		let openBtn = document.createElement("button");
 		openBtn.classList = "inline";
 		openBtn.title = "Ajouter une porte ouverte";
@@ -425,7 +425,7 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(openBtn);
+		doorsBtnGrp.appendChild(openBtn);
 		let lockedUnknownBtn = document.createElement("button");
 		lockedUnknownBtn.classList = "inline";
 		lockedUnknownBtn.title = "Ajouter une porte verrouillée";
@@ -443,7 +443,7 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(lockedUnknownBtn);
+		doorsBtnGrp.appendChild(lockedUnknownBtn);
 		let lockedMagneticBtn = document.createElement("button");
 		lockedMagneticBtn.classList = "inline";
 		lockedMagneticBtn.title = "Ajouter une porte verrouillée à ouvrir avec une clé magnétique";
@@ -461,7 +461,7 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(lockedMagneticBtn);
+		doorsBtnGrp.appendChild(lockedMagneticBtn);
 		let lockedBumpBtn = document.createElement("button");
 		lockedBumpBtn.classList = "inline";
 		lockedBumpBtn.title = "Ajouter une porte verrouillée à ouvrir avec une clé à percussion";
@@ -479,7 +479,7 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(lockedBumpBtn);
+		doorsBtnGrp.appendChild(lockedBumpBtn);
 		let lockedClassicBtn = document.createElement("button");
 		lockedClassicBtn.classList = "inline";
 		lockedClassicBtn.title = "Ajouter une porte verrouillée à ouvrir avec un décapsuleur";
@@ -497,11 +497,16 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(lockedClassicBtn);
+		doorsBtnGrp.appendChild(lockedClassicBtn);
 		let stairsBtn = document.createElement("button");
 		stairsBtn.classList = "inline";
-		stairsBtn.textContent = "S";
 		stairsBtn.title = "Ajouter les escaliers";
+		let stairsImg = document.createElement("img");
+		stairsImg.src = "https://codeberg.org/LcsTen/assistanhordes/raw/master/stairs.png";
+		stairsImg.alt = "S";
+		stairsImg.style.margin = "0";
+		stairsImg.addEventListener("load", resetMenuBottom);
+		stairsBtn.appendChild(stairsImg);
 		stairsBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -511,7 +516,7 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(stairsBtn);
+		doorsBtnGrp.appendChild(stairsBtn);
 		let removeBtn = document.createElement("button");
 		removeBtn.classList = "inline";
 		removeBtn.title = "Supprimer une porte";
@@ -532,11 +537,13 @@ function init(){
 				GM_setValue("map", map);
 			}
 		});
-		mappingBtns.appendChild(removeBtn);
+		doorsBtnGrp.appendChild(removeBtn);
+		mappingBtns.appendChild(doorsBtnGrp);
 
+		let directionsBtnGrp = document.createElement("span");
+		directionsBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
 		let westBtn = document.createElement("button");
 		westBtn.classList = "inline";
-		westBtn.style.marginLeft = "8%";
 		westBtn.textContent = "←";
 		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
 		westBtn.addEventListener("click", () => {
@@ -545,7 +552,7 @@ function init(){
 			map[position[2]][position[1]][position[0]].directions ^= WEST;
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(westBtn);
+		directionsBtnGrp.appendChild(westBtn);
 		let northBtn = document.createElement("button");
 		northBtn.classList = "inline";
 		northBtn.textContent = "↑";
@@ -556,7 +563,7 @@ function init(){
 			map[position[2]][position[1]][position[0]].directions ^= NORTH;
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(northBtn);
+		directionsBtnGrp.appendChild(northBtn);
 		let eastBtn = document.createElement("button");
 		eastBtn.classList = "inline";
 		eastBtn.textContent = "→";
@@ -567,7 +574,7 @@ function init(){
 			map[position[2]][position[1]][position[0]].directions ^= EAST;
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(eastBtn);
+		directionsBtnGrp.appendChild(eastBtn);
 		let southBtn = document.createElement("button");
 		southBtn.classList = "inline";
 		southBtn.textContent = "↓";
@@ -578,10 +585,11 @@ function init(){
 			map[position[2]][position[1]][position[0]].directions ^= SOUTH;
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(southBtn);
+		directionsBtnGrp.appendChild(southBtn);
+		mappingBtns.appendChild(directionsBtnGrp);
 
-		mappingBtns.appendChild(document.createElement("br"));
-
+		let zombiesBtnGrp = document.createElement("span");
+		zombiesBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
 		let zombiesMinusBtn = document.createElement("button");
 		zombiesMinusBtn.classList = "inline";
 		zombiesMinusBtn.textContent = "-";
@@ -592,11 +600,11 @@ function init(){
 			map[position[2]][position[1]][position[0]].zombies = Math.max(0, map[position[2]][position[1]][position[0]].zombies - 1);
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(zombiesMinusBtn);
+		zombiesBtnGrp.appendChild(zombiesMinusBtn);
 		let zombieIcon = document.createElement("img");
 		zombieIcon.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_zombie.gif";
 		zombieIcon.addEventListener("load", resetMenuBottom);
-		mappingBtns.appendChild(zombieIcon);
+		zombiesBtnGrp.appendChild(zombieIcon);
 		let zombiesPlusBtn = document.createElement("button");
 		zombiesPlusBtn.classList = "inline";
 		zombiesPlusBtn.textContent = "+";
@@ -607,12 +615,13 @@ function init(){
 			map[position[2]][position[1]][position[0]].zombies = Math.min(4, map[position[2]][position[1]][position[0]].zombies + 1);
 			GM_setValue("map", map);
 		});
-		mappingBtns.appendChild(zombiesPlusBtn);
+		zombiesBtnGrp.appendChild(zombiesPlusBtn);
+		mappingBtns.appendChild(zombiesBtnGrp);
 
 		let resetBtn = document.createElement("button");
 		resetBtn.classList = "inline";
+		resetBtn.style = "margin-left: 1%; margin-right: 1%";
 		resetBtn.title = "Supprimer la carte";
-		resetBtn.style.marginLeft = "8%";
 		let resetImg = document.createElement("img");
 		resetImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_arma.gif";
 		resetImg.alt = "Reset";
@@ -643,21 +652,15 @@ function init(){
 		menu.appendChild(importExportBtns);
 	}
 
-	let mapTable = document.createElement("table");
-	mapTable.style.borderSpacing = "0";
-	ruineExplorerTBody = document.createElement("tbody");
-	for(let i = 0; i < MAP_HEIGHT; i++){
-		let tr = document.createElement("tr");
-		for(let j = 0; j < MAP_WIDTH; j++){
-			let td = document.createElement("td");
-			td.style = "width: 22px; min-width: 22px; height: 22px; padding: 0; position: relative";
-			tr.appendChild(td);
-		}
-		ruineExplorerTBody.appendChild(tr);
+	mapGrid = document.createElement("div");
+	mapGrid.style = `display: grid; grid-template-columns: repeat(${MAP_WIDTH}, 1fr); grid-template-rows: repeat(${MAP_HEIGHT}, 1fr); aspect-ratio: ${MAP_WIDTH} / ${MAP_HEIGHT}; width: 100%; column-gap: 0; row-gap: 0`;
+	for(let i = 0; i < MAP_WIDTH*MAP_HEIGHT; i++){
+		let div = document.createElement("div");
+		div.style.position = "relative";
+		mapGrid.appendChild(div);
 	}
 	writeMap();
-	mapTable.appendChild(ruineExplorerTBody);
-	menu.appendChild(mapTable);
+	menu.appendChild(mapGrid);
 	document.body.appendChild(menu);
 	menu.style.bottom = (title.offsetHeight - menu.offsetHeight) + "px";
 
