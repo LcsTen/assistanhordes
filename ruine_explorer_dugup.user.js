@@ -606,7 +606,9 @@ function init(){
 		resetImg.addEventListener("load", resetMenuBottom);
 		resetBtn.appendChild(resetImg);
 		resetBtn.addEventListener("click", () => {
-			GM_setValue("map", undefined);
+			if(confirm("Supprimer la carte ?")){
+				GM_setValue("map", undefined);
+			}
 		});
 		mappingBtns.appendChild(resetBtn);
 		
