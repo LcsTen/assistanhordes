@@ -410,6 +410,7 @@ function init(){
 		mappingBtns.style = "border-bottom: 1px solid black";
 		let openBtn = document.createElement("button");
 		openBtn.classList = "inline";
+		openBtn.title = "Ajouter une porte ouverte";
 		let openImg = document.createElement("img");
 		openImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_enter.gif";
 		openImg.alt = "O";
@@ -427,6 +428,7 @@ function init(){
 		mappingBtns.appendChild(openBtn);
 		let lockedUnknownBtn = document.createElement("button");
 		lockedUnknownBtn.classList = "inline";
+		lockedUnknownBtn.title = "Ajouter une porte verrouillée";
 		let lockedUnknownImg = document.createElement("img");
 		lockedUnknownImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/lock.gif";
 		lockedUnknownImg.alt = "L";
@@ -444,6 +446,7 @@ function init(){
 		mappingBtns.appendChild(lockedUnknownBtn);
 		let lockedMagneticBtn = document.createElement("button");
 		lockedMagneticBtn.classList = "inline";
+		lockedMagneticBtn.title = "Ajouter une porte verrouillée à ouvrir avec une clé magnétique";
 		let lockedMagneticImg = document.createElement("img");
 		lockedMagneticImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_magneticKey.gif";
 		lockedMagneticImg.alt = "M";
@@ -461,6 +464,7 @@ function init(){
 		mappingBtns.appendChild(lockedMagneticBtn);
 		let lockedBumpBtn = document.createElement("button");
 		lockedBumpBtn.classList = "inline";
+		lockedBumpBtn.title = "Ajouter une porte verrouillée à ouvrir avec une clé à percussion";
 		let lockedBumpImg = document.createElement("img");
 		lockedBumpImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_bumpKey.gif";
 		lockedBumpImg.alt = "B";
@@ -478,6 +482,7 @@ function init(){
 		mappingBtns.appendChild(lockedBumpBtn);
 		let lockedClassicBtn = document.createElement("button");
 		lockedClassicBtn.classList = "inline";
+		lockedClassicBtn.title = "Ajouter une porte verrouillée à ouvrir avec un décapsuleur";
 		let lockedClassicImg = document.createElement("img");
 		lockedClassicImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_classicKey.gif";
 		lockedClassicImg.alt = "C";
@@ -496,6 +501,7 @@ function init(){
 		let stairsBtn = document.createElement("button");
 		stairsBtn.classList = "inline";
 		stairsBtn.textContent = "S";
+		stairsBtn.title = "Ajouter les escaliers";
 		stairsBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -508,6 +514,7 @@ function init(){
 		mappingBtns.appendChild(stairsBtn);
 		let removeBtn = document.createElement("button");
 		removeBtn.classList = "inline";
+		removeBtn.title = "Supprimer une porte";
 		let removeImg = document.createElement("img");
 		removeImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_remove.gif";
 		removeImg.alt = "X";
@@ -531,6 +538,7 @@ function init(){
 		westBtn.classList = "inline";
 		westBtn.style.marginLeft = "8%";
 		westBtn.textContent = "←";
+		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
 		westBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -541,6 +549,7 @@ function init(){
 		let northBtn = document.createElement("button");
 		northBtn.classList = "inline";
 		northBtn.textContent = "↑";
+		northBtn.title = "Ajouter/supprimer un passage vers le nord"; 
 		northBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -551,6 +560,7 @@ function init(){
 		let eastBtn = document.createElement("button");
 		eastBtn.classList = "inline";
 		eastBtn.textContent = "→";
+		eastBtn.title = "Ajouter/supprimer un passage vers l'est";
 		eastBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -561,6 +571,7 @@ function init(){
 		let southBtn = document.createElement("button");
 		southBtn.classList = "inline";
 		southBtn.textContent = "↓";
+		southBtn.title = "Ajouter/supprimer un passage vers le sud";
 		southBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -574,6 +585,7 @@ function init(){
 		let zombiesMinusBtn = document.createElement("button");
 		zombiesMinusBtn.classList = "inline";
 		zombiesMinusBtn.textContent = "-";
+		zombiesMinusBtn.title = "Supprimer un zombie";
 		zombiesMinusBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -588,6 +600,7 @@ function init(){
 		let zombiesPlusBtn = document.createElement("button");
 		zombiesPlusBtn.classList = "inline";
 		zombiesPlusBtn.textContent = "+";
+		zombiesPlusBtn.title = "Ajouter un zombie";
 		zombiesPlusBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
 			let position = GM_getValue("position");
@@ -598,6 +611,7 @@ function init(){
 
 		let resetBtn = document.createElement("button");
 		resetBtn.classList = "inline";
+		resetBtn.title = "Supprimer la carte";
 		resetBtn.style.marginLeft = "8%";
 		let resetImg = document.createElement("img");
 		resetImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_arma.gif";
