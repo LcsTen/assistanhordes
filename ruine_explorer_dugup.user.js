@@ -723,10 +723,25 @@ function main(){
 		actionMove.addEventListener("click", () => {
 			let position = GM_getValue("position", [Math.floor(MAP_WIDTH/2), 0, 0]);
 			let map = GM_getValue("map");
-			map[position[2]][position[1]][position[0]].directions |= deltaToDirection(+deltaX, -deltaY);
 			position[0] += +deltaX;
 			position[1] += -deltaY;
 			map[position[2]][position[1]][position[0]].directions |= deltaToDirection(-deltaX, +deltaY);
+			if(position[1] > 0 && map[position[2]][position[1] - 1][position[0]].directions != EMPTY){
+				map[position[2]][position[1]][position[0]].directions |= NORTH;
+				map[position[2]][position[1] - 1][position[0]].directions |= SOUTH;
+			}
+			if(position[0] < MAP_WIDTH - 1 && map[position[2]][position[1]][position[0] + 1].directions != EMPTY){
+				map[position[2]][position[1]][position[0]].directions |= EAST;
+				map[position[2]][position[1]][position[0] + 1].directions |= WEST;
+			}
+			if(position[1] < MAP_HEIGHT - 1 && map[position[2]][position[1] + 1][position[0]].directions != EMPTY){
+				map[position[2]][position[1]][position[0]].directions |= SOUTH;
+				map[position[2]][position[1] + 1][position[0]].directions |= NORTH;
+			}
+			if(position[0] > 0 && map[position[2]][position[1]][position[0] - 1].directions != EMPTY){
+				map[position[2]][position[1]][position[0]].directions |= WEST;
+				map[position[2]][position[1]][position[0] - 1].directions |= EAST;
+			}
 			GM_setValue("position", position);
 			GM_setValue("map", map);
 			console.log(`[REDU] actionMove with classList "${actionMove.classList.value}" clicked, moved to ${position[0]} / ${position[1]}`);
