@@ -220,6 +220,7 @@ let ruineExplorerPosition;
 let visibleFloor;
 let ruineExplorerFloorTxt;
 let mapGrid;
+let directionMappingButtons;
 
 function writeMap(){
 	let map = GM_getValue("map");
@@ -540,9 +541,11 @@ function init(){
 		doorsBtnGrp.appendChild(removeBtn);
 		mappingBtns.appendChild(doorsBtnGrp);
 
+		directionMappingButtons = {};
 		let directionsBtnGrp = document.createElement("span");
 		directionsBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
 		let westBtn = document.createElement("button");
+		directionMappingButtons[WEST] = westBtn;
 		westBtn.classList = "inline";
 		westBtn.textContent = "←";
 		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
@@ -554,6 +557,7 @@ function init(){
 		});
 		directionsBtnGrp.appendChild(westBtn);
 		let northBtn = document.createElement("button");
+		directionMappingButtons[NORTH] = northBtn;
 		northBtn.classList = "inline";
 		northBtn.textContent = "↑";
 		northBtn.title = "Ajouter/supprimer un passage vers le nord"; 
@@ -565,6 +569,7 @@ function init(){
 		});
 		directionsBtnGrp.appendChild(northBtn);
 		let eastBtn = document.createElement("button");
+		directionMappingButtons[EAST] = eastBtn;
 		eastBtn.classList = "inline";
 		eastBtn.textContent = "→";
 		eastBtn.title = "Ajouter/supprimer un passage vers l'est";
@@ -576,6 +581,7 @@ function init(){
 		});
 		directionsBtnGrp.appendChild(eastBtn);
 		let southBtn = document.createElement("button");
+		directionMappingButtons[SOUTH] = southBtn;
 		southBtn.classList = "inline";
 		southBtn.textContent = "↓";
 		southBtn.title = "Ajouter/supprimer un passage vers le sud";
@@ -725,7 +731,11 @@ function main(){
 			let map = GM_getValue("map");
 			position[0] += +deltaX;
 			position[1] += -deltaY;
-			map[position[2]][position[1]][position[0]].directions |= deltaToDirection(-deltaX, +deltaY);
+			let direction = deltaToDirection(-deltaX, +deltaY);
+			for(let d of [NORTH, EAST, SOUTH, WEST]){
+				directionMappingButtons[d].disabled = (d === direction);
+			}
+			map[position[2]][position[1]][position[0]].directions |= direction;
 			if(position[1] > 0 && map[position[2]][position[1] - 1][position[0]].directions != EMPTY){
 				map[position[2]][position[1]][position[0]].directions |= NORTH;
 				map[position[2]][position[1] - 1][position[0]].directions |= SOUTH;
@@ -759,6 +769,9 @@ function main(){
 			map[position[2]][position[1]][position[0]].door = STAIRS;
 			GM_setValue("position", position);
 			GM_setValue("map", map);
+			for(let d of [NORTH, EAST, SOUTH, WEST]){
+				directionMappingButtons[d].disabled = false;
+			}
 		});
 		useStairsBtn.classList.add("redu-listened");
 	}
