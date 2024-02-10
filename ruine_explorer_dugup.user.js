@@ -405,10 +405,12 @@ function init(){
 
 	if(window.location.href.match("https://myhordes.de/") || window.location.href.match("https://myhordes.eu/") || window.location.href.match("https://armageddhordes.adri-web.dev") || window.location.href.match("ruine_explorer_free_drive.html")){
 		let mappingBtns = document.createElement("div");
-		mappingBtns.style = "border-bottom: 1px solid black; display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%";
+		mappingBtns.style = "border-bottom: 1px solid black; display: flex; width: 100%";
 
+		let notDirectionsBtnGrp = document.createElement("div");
+		notDirectionsBtnGrp.style = "display: flex; flex-wrap: wrap";
 		let doorsBtnGrp = document.createElement("span");
-		doorsBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
+		doorsBtnGrp.style = "margin-left: 1%; margin-right: 1%";
 		let openBtn = document.createElement("button");
 		openBtn.classList = "inline";
 		openBtn.title = "Ajouter une porte ouverte";
@@ -539,60 +541,7 @@ function init(){
 			}
 		});
 		doorsBtnGrp.appendChild(removeBtn);
-		mappingBtns.appendChild(doorsBtnGrp);
-
-		directionMappingButtons = {};
-		let directionsBtnGrp = document.createElement("span");
-		directionsBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
-		let westBtn = document.createElement("button");
-		directionMappingButtons[WEST] = westBtn;
-		westBtn.classList = "inline";
-		westBtn.textContent = "←";
-		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
-		westBtn.addEventListener("click", () => {
-			let map = GM_getValue("map");
-			let position = GM_getValue("position");
-			map[position[2]][position[1]][position[0]].directions ^= WEST;
-			GM_setValue("map", map);
-		});
-		directionsBtnGrp.appendChild(westBtn);
-		let northBtn = document.createElement("button");
-		directionMappingButtons[NORTH] = northBtn;
-		northBtn.classList = "inline";
-		northBtn.textContent = "↑";
-		northBtn.title = "Ajouter/supprimer un passage vers le nord"; 
-		northBtn.addEventListener("click", () => {
-			let map = GM_getValue("map");
-			let position = GM_getValue("position");
-			map[position[2]][position[1]][position[0]].directions ^= NORTH;
-			GM_setValue("map", map);
-		});
-		directionsBtnGrp.appendChild(northBtn);
-		let eastBtn = document.createElement("button");
-		directionMappingButtons[EAST] = eastBtn;
-		eastBtn.classList = "inline";
-		eastBtn.textContent = "→";
-		eastBtn.title = "Ajouter/supprimer un passage vers l'est";
-		eastBtn.addEventListener("click", () => {
-			let map = GM_getValue("map");
-			let position = GM_getValue("position");
-			map[position[2]][position[1]][position[0]].directions ^= EAST;
-			GM_setValue("map", map);
-		});
-		directionsBtnGrp.appendChild(eastBtn);
-		let southBtn = document.createElement("button");
-		directionMappingButtons[SOUTH] = southBtn;
-		southBtn.classList = "inline";
-		southBtn.textContent = "↓";
-		southBtn.title = "Ajouter/supprimer un passage vers le sud";
-		southBtn.addEventListener("click", () => {
-			let map = GM_getValue("map");
-			let position = GM_getValue("position");
-			map[position[2]][position[1]][position[0]].directions ^= SOUTH;
-			GM_setValue("map", map);
-		});
-		directionsBtnGrp.appendChild(southBtn);
-		mappingBtns.appendChild(directionsBtnGrp);
+		notDirectionsBtnGrp.appendChild(doorsBtnGrp);
 
 		let zombiesBtnGrp = document.createElement("span");
 		zombiesBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
@@ -622,7 +571,7 @@ function init(){
 			GM_setValue("map", map);
 		});
 		zombiesBtnGrp.appendChild(zombiesPlusBtn);
-		mappingBtns.appendChild(zombiesBtnGrp);
+		notDirectionsBtnGrp.appendChild(zombiesBtnGrp);
 
 		let resetBtn = document.createElement("button");
 		resetBtn.classList = "inline";
@@ -639,7 +588,107 @@ function init(){
 				GM_setValue("map", undefined);
 			}
 		});
-		mappingBtns.appendChild(resetBtn);
+		notDirectionsBtnGrp.appendChild(resetBtn);
+		mappingBtns.appendChild(notDirectionsBtnGrp);
+
+		directionMappingButtons = {};
+		let directionsFlexElt = document.createElement("div");
+		let directionsBtnGrp = document.createElement("div");
+		directionsBtnGrp.style = "display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; position: relative; top: 50%; transform: translateY(-50%)";
+		directionsBtnGrp.appendChild(document.createElement("div"));
+		let northBtn = document.createElement("button");
+		directionMappingButtons[NORTH] = northBtn;
+		northBtn.classList = "inline";
+		northBtn.style.textAlign = "center";
+		northBtn.textContent = "↑";
+		northBtn.title = "Ajouter/supprimer un passage vers le nord";
+		northBtn.addEventListener("click", () => {
+			let map = GM_getValue("map");
+			let position = GM_getValue("position");
+			map[position[2]][position[1]][position[0]].directions ^= NORTH;
+			GM_setValue("map", map);
+		});
+		directionsBtnGrp.appendChild(northBtn);
+		directionsBtnGrp.appendChild(document.createElement("div"));
+
+		let westBtn = document.createElement("button");
+		directionMappingButtons[WEST] = westBtn;
+		westBtn.classList = "inline";
+		westBtn.style.textAlign = "center";
+		westBtn.textContent = "←";
+		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
+		westBtn.addEventListener("click", () => {
+			let map = GM_getValue("map");
+			let position = GM_getValue("position");
+			map[position[2]][position[1]][position[0]].directions ^= WEST;
+			GM_setValue("map", map);
+		});
+		directionsBtnGrp.appendChild(westBtn);
+
+		let allDirectionsBtn = document.createElement("button");
+		allDirectionsBtn.classList = "inline";
+		allDirectionsBtn.style = "text-align: center; margin-top: 0";
+		allDirectionsBtn.textContent = "╬";
+		allDirectionsBtn.title = "Ajouter des passages dans toutes les directions";
+		allDirectionsBtn.addEventListener("click", () => {
+			let map = GM_getValue("map");
+			let position = GM_getValue("position");
+			if(map[position[2]][position[1]][position[0]].directions === (NORTH | EAST | SOUTH | WEST)){
+				map[position[2]][position[1]][position[0]].directions = EMPTY;
+				if(position[1] > 0 && map[position[2]][position[1] - 1][position[0]].directions != EMPTY){
+					map[position[2]][position[1]][position[0]].directions |= NORTH;
+					map[position[2]][position[1] - 1][position[0]].directions |= SOUTH;
+				}
+				if(position[0] < MAP_WIDTH - 1 && map[position[2]][position[1]][position[0] + 1].directions != EMPTY){
+					map[position[2]][position[1]][position[0]].directions |= EAST;
+					map[position[2]][position[1]][position[0] + 1].directions |= WEST;
+				}
+				if(position[1] < MAP_HEIGHT - 1 && map[position[2]][position[1] + 1][position[0]].directions != EMPTY){
+					map[position[2]][position[1]][position[0]].directions |= SOUTH;
+					map[position[2]][position[1] + 1][position[0]].directions |= NORTH;
+				}
+				if(position[0] > 0 && map[position[2]][position[1]][position[0] - 1].directions != EMPTY){
+					map[position[2]][position[1]][position[0]].directions |= WEST;
+					map[position[2]][position[1]][position[0] - 1].directions |= EAST;
+				}
+			}else{
+				map[position[2]][position[1]][position[0]].directions = NORTH | EAST | SOUTH | WEST;
+			}
+			GM_setValue("map", map);
+		});
+		directionsBtnGrp.appendChild(allDirectionsBtn);
+
+		let eastBtn = document.createElement("button");
+		directionMappingButtons[EAST] = eastBtn;
+		eastBtn.classList = "inline";
+		eastBtn.style = "text-align: center; margin-top: 0";
+		eastBtn.textContent = "→";
+		eastBtn.title = "Ajouter/supprimer un passage vers l'est";
+		eastBtn.addEventListener("click", () => {
+			let map = GM_getValue("map");
+			let position = GM_getValue("position");
+			map[position[2]][position[1]][position[0]].directions ^= EAST;
+			GM_setValue("map", map);
+		});
+		directionsBtnGrp.appendChild(eastBtn);
+
+		directionsBtnGrp.appendChild(document.createElement("div"));
+		let southBtn = document.createElement("button");
+		directionMappingButtons[SOUTH] = southBtn;
+		southBtn.classList = "inline";
+		southBtn.style.textAlign = "center";
+		southBtn.textContent = "↓";
+		southBtn.title = "Ajouter/supprimer un passage vers le sud";
+		southBtn.addEventListener("click", () => {
+			let map = GM_getValue("map");
+			let position = GM_getValue("position");
+			map[position[2]][position[1]][position[0]].directions ^= SOUTH;
+			GM_setValue("map", map);
+		});
+		directionsBtnGrp.appendChild(southBtn);
+		directionsBtnGrp.appendChild(document.createElement("div"));
+		directionsFlexElt.appendChild(directionsBtnGrp);
+		mappingBtns.appendChild(directionsFlexElt);
 		
 		menu.appendChild(mappingBtns);
 	}else if(window.location.href.match("https://bbh.fred26.fr/") || window.location.href.match("https://gest-hordes2.eragaming.fr/")){
