@@ -52,8 +52,9 @@ const LOCKED_CLASSIC = 5;
 const STAIRS = 6;
 const ENTRANCE = 7;
 
-const MAP_WIDTH = 15;
+const MAP_WIDTH = 13;
 const MAP_HEIGHT = 14;
+const ENTRANCE_X_POSITION = 7;
 
 function spanFrom(txt){
 	let res = document.createElement("span");
@@ -224,7 +225,7 @@ let directionMappingButtons;
 
 function writeMap(){
 	let map = GM_getValue("map");
-	if(map === undefined || !Array.isArray(map) || map.length !== 2){
+	if(map === undefined || !Array.isArray(map) || map.length !== 2 || map[0].length != MAP_HEIGHT || map[0][0].length != MAP_WIDTH){
 		map = blankMap();
 		GM_setValue("map", map);
 	}
@@ -256,7 +257,7 @@ function writeMap(){
 function updatePosition(){
 	if(ruineExplorerPosition !== undefined){
 		let position = GM_getValue("position");
-		ruineExplorerPosition.textContent = position ? `${position[0] - Math.floor(MAP_WIDTH/2)} / ${position[1]} / ${position[2]}` : "";
+		ruineExplorerPosition.textContent = position ? `${position[0] - ENTRANCE_X_POSITION} / ${position[1]} / ${position[2]}` : "";
 	}
 }
 
@@ -273,8 +274,8 @@ function blankMap(){
 		}
 		map.push(floor);
 	}
-	map[0][0][Math.floor(MAP_WIDTH/2)].door = ENTRANCE;
-	map[0][0][Math.floor(MAP_WIDTH/2)].directions = SOUTH;
+	map[0][0][ENTRANCE_X_POSITION].door = ENTRANCE;
+	map[0][0][ENTRANCE_X_POSITION].directions = SOUTH;
 	return map;
 }
 
@@ -772,7 +773,7 @@ function main(){
 	}
 	if(document.querySelector(".plane-type-exit") !== null){
 		if(!sawEntrance){
-			GM_setValue("position",  [Math.floor(MAP_WIDTH/2), 0, 0]);
+			GM_setValue("position",  [ENTRANCE_X_POSITION, 0, 0]);
 			if(visibleFloor !== 0){
 				visibleFloor = 0;
 				writeMap();
@@ -798,7 +799,7 @@ function main(){
 		}
 		console.log(`[REDU] Infecting actionMove with classList "${actionMove.classList.value}" and attributes x-direction-x "${deltaX} and x-direction-y "${deltaY}"`);
 		actionMove.addEventListener("click", () => {
-			let position = GM_getValue("position", [Math.floor(MAP_WIDTH/2), 0, 0]);
+			let position = GM_getValue("position", [ENTRANCE_X_POSITION, 0, 0]);
 			let map = GM_getValue("map");
 			position[0] += +deltaX;
 			position[1] += -deltaY;
@@ -832,7 +833,7 @@ function main(){
 	let useStairsBtn = document.querySelector("#stairs_button:not(.redu-listened");
 	if(useStairsBtn !== null){
 		useStairsBtn.addEventListener("click", () => {
-			let position = GM_getValue("position", [Math.floor(MAP_WIDTH/2), 0, 0]);
+			let position = GM_getValue("position", [ENTRANCE_X_POSITION, 0, 0]);
 			let map = GM_getValue("map");
 			map[position[2]][position[1]][position[0]].door = STAIRS;
 			position[2] = (position[2] + 1) % 2;
