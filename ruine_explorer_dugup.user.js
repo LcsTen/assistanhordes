@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.2
+// @version  0.3
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -714,6 +714,55 @@ function init(){
 		mappingBtns.appendChild(directionsFlexElt);
 		
 		menu.appendChild(mappingBtns);
+
+		document.body.addEventListener("keydown", e => {
+			if(e.key == "2"){
+				southBtn.click();
+			}else if(e.key == "4"){
+				westBtn.click();
+			}else if(e.key == "6"){
+				eastBtn.click();
+			}else if(e.key == "8"){
+				northBtn.click();
+			}else if(e.key == "1"){
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				map[position[2]][position[1]][position[0]].directions |= NORTH | EAST;
+				GM_setValue("map", map);
+			}else if(e.key == "3"){
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				map[position[2]][position[1]][position[0]].directions |= NORTH | WEST;
+				GM_setValue("map", map);
+			}else if(e.key == "7"){
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				map[position[2]][position[1]][position[0]].directions |= EAST | SOUTH;
+				GM_setValue("map", map);
+			}else if(e.key == "9"){
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				map[position[2]][position[1]][position[0]].directions |= SOUTH | WEST;
+				GM_setValue("map", map);
+			}else if(e.key == "5"){
+				allDirectionsBtn.click();
+			}else if(e.key == "+"){
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				map[position[2]][position[1]][position[0]].zombies = (map[position[2]][position[1]][position[0]].zombies + 1) % 5;
+				GM_setValue("map", map);
+			}else if(e.key == "Enter"){
+				if(document.querySelector(".zone-plane-ui")){
+					e.preventDefault();
+				}
+				let map = GM_getValue("map");
+				let position = GM_getValue("position");
+				if(map[position[2]][position[1]][position[0]].door !== ENTRANCE){
+					map[position[2]][position[1]][position[0]].door = (map[position[2]][position[1]][position[0]].door + 1) % STAIRS;
+					GM_setValue("map", map);
+				}
+			}
+		});
 	}else if(window.location.href.match("https://bbh.fred26.fr/") || window.location.href.match("https://gest-hordes2.eragaming.fr/")){
 		let importExportBtns = document.createElement("div");
 		importExportBtns.style = "border-bottom: 1px solid black";
