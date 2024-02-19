@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.3
+// @version  0.4
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -78,13 +78,13 @@ function withStyle(node, style){
 }
 
 const DIRECTIONS_IMG = {};
-DIRECTIONS_IMG[NORTH] = svgFrom("<path stroke='black' d='M 10,0 v 90 h 80 v -90' stroke-width='5'>");
+DIRECTIONS_IMG[NORTH] = svgFrom("<path d='M 10,0 v 90 h 80 v -90'>");
 DIRECTIONS_IMG[EAST] = withStyle(DIRECTIONS_IMG[NORTH], "transform: rotate(90deg)");
 DIRECTIONS_IMG[SOUTH] = withStyle(DIRECTIONS_IMG[NORTH], "transform: rotate(180deg)");
 DIRECTIONS_IMG[WEST] = withStyle(DIRECTIONS_IMG[NORTH], "transform: rotate(270deg)");
 
-DIRECTIONS_IMG[NORTH | EAST] = svgFrom("<path d='M 10,0 v 90 h 90 v -80 h -10 v -10'></path><path stroke='black' stroke-width='5' d='M 10,0 v 90 h 90 m 0,-80 h -10 v -10' fill='none'></path>");
-DIRECTIONS_IMG[NORTH | SOUTH] = svgFrom("<path d='M 10,0 v 100 h 80 v -100'></path><path stroke='black' d='M 10,0 v 100 m 80,0 v -100' stroke-width='5'></path>");
+DIRECTIONS_IMG[NORTH | EAST] = svgFrom("<path d='M 10,0 v 90 h 90 v -80 h -10 v -10' stroke='none'></path><path d='M 10,0 v 90 h 90 m 0,-80 h -10 v -10' fill='none'></path>");
+DIRECTIONS_IMG[NORTH | SOUTH] = svgFrom("<path d='M 10,0 v 100 h 80 v -100' stroke='none'></path><path d='M 10,0 v 100 m 80,0 v -100'></path>");
 DIRECTIONS_IMG[NORTH | WEST] = withStyle(DIRECTIONS_IMG[NORTH | EAST], "transform: rotate(270deg)");
 DIRECTIONS_IMG[EAST | SOUTH] = withStyle(DIRECTIONS_IMG[NORTH | EAST], "transform: rotate(90deg)");
 
@@ -93,12 +93,12 @@ DIRECTIONS_IMG[EAST | WEST] = withStyle(DIRECTIONS_IMG[NORTH | SOUTH], "transfor
 
 DIRECTIONS_IMG[SOUTH | WEST] = withStyle(DIRECTIONS_IMG[NORTH | EAST], "transform: rotate(180deg)");
 
-DIRECTIONS_IMG[EAST | SOUTH | WEST] = svgFrom("<path d='M 0,10 h 100 v 80 h -10 v 10 h -80 v -10 h -10'></path><path stroke='black' d='M 0,10 h 100 m 0,80 h -10 v 10 m -80,0 v -10 h -10' fill='none' stroke-width='5'></path>");
+DIRECTIONS_IMG[EAST | SOUTH | WEST] = svgFrom("<path d='M 0,10 h 100 v 80 h -10 v 10 h -80 v -10 h -10' stroke='none'></path><path d='M 0,10 h 100 m 0,80 h -10 v 10 m -80,0 v -10 h -10' fill='none'></path>");
 DIRECTIONS_IMG[NORTH | SOUTH | WEST] = withStyle(DIRECTIONS_IMG[EAST | SOUTH | WEST], "transform: rotate(90deg)");
 DIRECTIONS_IMG[NORTH | EAST | WEST] = withStyle(DIRECTIONS_IMG[EAST | SOUTH | WEST], "transform: rotate(180deg)");
 DIRECTIONS_IMG[NORTH | EAST | SOUTH] = withStyle(DIRECTIONS_IMG[EAST | SOUTH | WEST], "transform: rotate(270deg)");
 
-DIRECTIONS_IMG[NORTH | EAST | SOUTH | WEST] = svgFrom("<path d='M 10,0 v 10 h -10 v 80 h 10 v 10 h 80 v -10 h 10 v -80 h -10 v -10'></path><path stroke='black' stroke-width='5' d='M 10,0 v 10 h -10 m 0,80 h 10 v 10 m 80,0 v -10 h 10 m 0,-80 h -10 v -10'></path>");
+DIRECTIONS_IMG[NORTH | EAST | SOUTH | WEST] = svgFrom("<path d='M 10,0 v 10 h -10 v 80 h 10 v 10 h 80 v -10 h 10 v -80 h -10 v -10' stroke='none'></path><path d='M 10,0 v 10 h -10 m 0,80 h 10 v 10 m 80,0 v -10 h 10 m 0,-80 h -10 v -10'></path>");
 
 function imgFrom(src){
 	let res = document.createElement("img");
@@ -115,8 +115,6 @@ DOORS_IMG[LOCKED_BUMP] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myhord
 DOORS_IMG[LOCKED_CLASSIC] = imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_classicKey.gif");
 DOORS_IMG[STAIRS] = imgFrom("https://codeberg.org/LcsTen/assistanhordes/raw/master/stairs.png");
 DOORS_IMG[ENTRANCE] = imgFrom("https://codeberg.org/LcsTen/assistanhordes/raw/master/exit.png");
-
-const ZOMBIE_COLORS = ["white", "yellow", "orange", "red", "violet"];
 
 const PLAYER_POSITION_IMG = withStyle(imgFrom("https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_middot.gif"), "z-index: 2; animation: 0.5s blink ease infinite; width: 100%; height: 100%; top: 0; left: 0");
 
@@ -206,6 +204,11 @@ REDU_TO_GH_DOORS[LOCKED_MAGNETIC] = 5;
 REDU_TO_GH_DOORS[LOCKED_BUMP] = 4;
 REDU_TO_GH_DOORS[LOCKED_CLASSIC] = 3;
 
+const LOCATION_MH = 0;
+const LOCATION_BBH = 1;
+const LOCATION_GH = 2;
+const LOCATION_TEST_PAGE = 3;
+
 let style = `
 	bottom: 5px;
 	color: #d7ff5b;
@@ -217,11 +220,23 @@ let style = `
 	left: 16px;
 `;
 
+let location;
+if(window.location.href.match("https://myhordes.de/") || window.location.href.match("https://myhordes.eu/") || window.location.href.match("https://armageddhordes.adri-web.dev")){
+	location = LOCATION_MH;
+}else if(window.location.href.match("https://bbh.fred26.fr/")){
+	location = LOCATION_BBH;
+}else if(window.location.href.match("https://gest-hordes2.eragaming.fr/")){
+	location = LOCATION_GH;
+}else if(window.location.href.match("ruine_explorer_free_drive.html")){
+	location = LOCATION_TEST_PAGE;
+}
 let ruineExplorerPosition;
 let visibleFloor;
 let ruineExplorerFloorTxt;
 let mapGrid;
 let directionMappingButtons;
+let ruineExplorerMenu;
+let ruineExplorerMappingBtns;
 
 function writeMap(){
 	let map = GM_getValue("map");
@@ -237,13 +252,12 @@ function writeMap(){
 			let currentDiv = mapGrid.children[i*MAP_WIDTH + j];
 			let currentTile = map[visibleFloor][i][j];
 			currentDiv.textContent = "";
-			currentDiv.style.backgroundColor = null;
+			currentDiv.classList = "z" + currentTile.zombies;
 			if(currentTile.door !== NOTHING){
 				currentDiv.appendChild(DOORS_IMG[currentTile.door].cloneNode(true));
 			}
 			if(currentTile.directions !== EMPTY){
 				let directions = DIRECTIONS_IMG[currentTile.directions].cloneNode(true);
-				directions.setAttribute("fill", ZOMBIE_COLORS[currentTile.zombies]);
 				currentDiv.appendChild(directions);
 			}
 		}
@@ -280,7 +294,7 @@ function blankMap(){
 }
 
 function importMap(){
-	if(window.location.href.match("https://bbh.fred26.fr/")){
+	if(location === LOCATION_BBH){
 		let map = blankMap();
 		let ruinsPlan = document.querySelectorAll(".ruins_plan");
 		for(let i = 0; i < 2; i++){
@@ -309,7 +323,7 @@ function importMap(){
 			}
 		}
 		GM_setValue("map", map);
-	}else if(window.location.href.match("https://gest-hordes2.eragaming.fr/")){
+	}else if(location === LOCATION_GH){
 		if(!document.querySelector("#carteRuine")){
 			return;
 		}
@@ -346,7 +360,7 @@ function importMap(){
 
 function exportMap(){
 	// TODO: Support GH
-	if(window.location.href.match("https://bbh.fred26.fr/")){
+	if(location === LOCATION_BBH){
 		let map = GM_getValue("map");
 		for(let i = 0; i < 2; i++){
 			for(let j = 0; j < MAP_HEIGHT; j++){
@@ -374,44 +388,37 @@ function init(){
 	let position = GM_getValue("position");
 	visibleFloor = position === undefined ? 0 : position[2];
 
-	let menu = document.createElement("div");
-	menu.style = `position: fixed; left: 2%; background-color: rgb(205, 159, 110); border-radius: 10px 10px 0px 0px; transition: bottom 0.5s linear 0s; width: calc((100% - 950px)/2 - 4%); max-width: calc(${MAP_WIDTH}*22px);min-width: calc(${MAP_WIDTH}*11px);`;
+	ruineExplorerMenu = document.createElement("div");
+	ruineExplorerMenu.id = "ruineExplorerMenu";
+	ruineExplorerMenu.classList = "folded";
 	let title = document.createElement("div");
-	title.style = "color: white; background-color: #714526; padding: 5px; border-radius: 10px 10px 0px 0px; text-align: center; cursor: pointer";
 	title.textContent = "Ruine Explorer";
-	title.addEventListener("click", () => menu.style.bottom = menu.style.bottom == "0px" ? (title.offsetHeight - menu.offsetHeight) + "px" : 0);
-	menu.appendChild(title);
+	title.addEventListener("click", () => ruineExplorerMenu.classList.toggle("folded"));
+	ruineExplorerMenu.appendChild(title);
 
 	let floorHeader = document.createElement("div");
-	floorHeader.style = "text-align: center; border-bottom: 1px solid black";
 	ruineExplorerFloorTxt = document.createElement("span");
 	ruineExplorerFloorTxt.textContent = `Étage ${visibleFloor}`;
 	floorHeader.appendChild(ruineExplorerFloorTxt);
 	let floorChangeBtn = document.createElement("button");
 	floorChangeBtn.classList = "inline";
-	floorChangeBtn.style = "float: right";
 	floorChangeBtn.textContent = "↕";
 	floorChangeBtn.addEventListener("click", () => {
 		visibleFloor = (visibleFloor + 1) % 2;
 		writeMap();
 	});
 	floorHeader.appendChild(floorChangeBtn);
-	menu.appendChild(floorHeader);
+	ruineExplorerMenu.appendChild(floorHeader);
 
-	function resetMenuBottom(){
-		menu.classList.add("no-transition");
-		menu.style.bottom = (title.offsetHeight - Math.max(265, menu.offsetHeight)) + "px";
-		menu.classList.remove("no-transition");
-	}
+	let optionsSection = document.createElement("div");
+	let phoneModeOption = GM_getValue("phoneModeOption", false);
 
-	if(window.location.href.match("https://myhordes.de/") || window.location.href.match("https://myhordes.eu/") || window.location.href.match("https://armageddhordes.adri-web.dev") || window.location.href.match("ruine_explorer_free_drive.html")){
-		let mappingBtns = document.createElement("div");
-		mappingBtns.style = "border-bottom: 1px solid black; display: flex; width: 100%";
+	if(location === LOCATION_MH || location === LOCATION_TEST_PAGE){
+		ruineExplorerMappingBtns = document.createElement("div");
+		ruineExplorerMappingBtns.id = "ruineExplorerMappingBtns";
 
 		let notDirectionsBtnGrp = document.createElement("div");
-		notDirectionsBtnGrp.style = "display: flex; flex-wrap: wrap";
 		let doorsBtnGrp = document.createElement("span");
-		doorsBtnGrp.style = "margin-left: 1%; margin-right: 1%";
 		let openBtn = document.createElement("button");
 		openBtn.classList = "inline";
 		openBtn.title = "Ajouter une porte ouverte";
@@ -419,7 +426,6 @@ function init(){
 		openImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_enter.gif";
 		openImg.alt = "O";
 		openImg.style.margin = "0";
-		openImg.addEventListener("load", resetMenuBottom);
 		openBtn.appendChild(openImg);
 		openBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -437,7 +443,6 @@ function init(){
 		lockedUnknownImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/lock.gif";
 		lockedUnknownImg.alt = "L";
 		lockedUnknownImg.style.margin = "0";
-		lockedUnknownImg.addEventListener("load", resetMenuBottom);
 		lockedUnknownBtn.appendChild(lockedUnknownImg);
 		lockedUnknownBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -455,7 +460,6 @@ function init(){
 		lockedMagneticImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_magneticKey.gif";
 		lockedMagneticImg.alt = "M";
 		lockedMagneticImg.style.margin = "0";
-		lockedMagneticImg.addEventListener("load", resetMenuBottom);
 		lockedMagneticBtn.appendChild(lockedMagneticImg);
 		lockedMagneticBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -473,7 +477,6 @@ function init(){
 		lockedBumpImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_bumpKey.gif";
 		lockedBumpImg.alt = "B";
 		lockedBumpImg.style.margin = "0";
-		lockedBumpImg.addEventListener("load", resetMenuBottom);
 		lockedBumpBtn.appendChild(lockedBumpImg);
 		lockedBumpBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -491,7 +494,6 @@ function init(){
 		lockedClassicImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/item/item_classicKey.gif";
 		lockedClassicImg.alt = "C";
 		lockedClassicImg.style.margin = "0";
-		lockedClassicImg.addEventListener("load", resetMenuBottom);
 		lockedClassicBtn.appendChild(lockedClassicImg);
 		lockedClassicBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -509,7 +511,6 @@ function init(){
 		stairsImg.src = "https://codeberg.org/LcsTen/assistanhordes/raw/master/stairs.png";
 		stairsImg.alt = "S";
 		stairsImg.style.margin = "0";
-		stairsImg.addEventListener("load", resetMenuBottom);
 		stairsBtn.appendChild(stairsImg);
 		stairsBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -528,7 +529,6 @@ function init(){
 		removeImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_remove.gif";
 		removeImg.alt = "X";
 		removeImg.style.margin = "0";
-		removeImg.addEventListener("load", resetMenuBottom);
 		removeBtn.appendChild(removeImg);
 		removeBtn.addEventListener("click", () => {
 			let map = GM_getValue("map");
@@ -545,11 +545,10 @@ function init(){
 		notDirectionsBtnGrp.appendChild(doorsBtnGrp);
 
 		let zombiesBtnGrp = document.createElement("span");
-		zombiesBtnGrp.style = "white-space: nowrap; margin-left: 1%; margin-right: 1%";
+		zombiesBtnGrp.classList = "no-wrap";
 		let zombiesMinusBtn = document.createElement("button");
 		zombiesMinusBtn.classList = "inline";
 		let zombiesMinusTxt = document.createElement("div");
-		zombiesMinusTxt.style = "text-align: center; width: 16px; height: 16px";
 		zombiesMinusTxt.textContent = "-";
 		zombiesMinusBtn.appendChild(zombiesMinusTxt);
 		zombiesMinusBtn.title = "Supprimer un zombie";
@@ -562,12 +561,10 @@ function init(){
 		zombiesBtnGrp.appendChild(zombiesMinusBtn);
 		let zombieIcon = document.createElement("img");
 		zombieIcon.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_zombie.gif";
-		zombieIcon.addEventListener("load", resetMenuBottom);
 		zombiesBtnGrp.appendChild(zombieIcon);
 		let zombiesPlusBtn = document.createElement("button");
 		zombiesPlusBtn.classList = "inline";
 		let zombiesPlusTxt = document.createElement("div");
-		zombiesPlusTxt.style = "text-align: center; width: 16px; height: 16px";
 		zombiesPlusTxt.textContent = "+";
 		zombiesPlusBtn.appendChild(zombiesPlusTxt);
 		zombiesPlusBtn.title = "Ajouter un zombie";
@@ -581,16 +578,13 @@ function init(){
 		notDirectionsBtnGrp.appendChild(zombiesBtnGrp);
 
 		let resetBtnGrp = document.createElement("div");
-		resetBtnGrp.style = "margin-left: 1%; margin-right: 1%";
 		let resetBtn = document.createElement("button");
 		resetBtn.classList = "inline";
-		resetBtn.style = "margin-left: 1%; margin-right: 1%";
 		resetBtn.title = "Supprimer la carte";
 		let resetImg = document.createElement("img");
 		resetImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/small_arma.gif";
 		resetImg.alt = "Reset";
 		resetImg.style.margin = "0";
-		resetImg.addEventListener("load", resetMenuBottom);
 		resetBtn.appendChild(resetImg);
 		resetBtn.addEventListener("click", () => {
 			if(confirm("Supprimer la carte ?")){
@@ -599,18 +593,16 @@ function init(){
 		});
 		resetBtnGrp.appendChild(resetBtn);
 		notDirectionsBtnGrp.appendChild(resetBtnGrp);
-		mappingBtns.appendChild(notDirectionsBtnGrp);
+		ruineExplorerMappingBtns.appendChild(notDirectionsBtnGrp);
 
 		directionMappingButtons = {};
 		let directionsFlexElt = document.createElement("div");
 		let directionsBtnGrp = document.createElement("div");
-		directionsBtnGrp.style = "display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; position: relative; top: 50%; transform: translateY(-50%)";
 		directionsBtnGrp.appendChild(document.createElement("div"));
 		let northBtn = document.createElement("button");
 		directionMappingButtons[NORTH] = northBtn;
 		northBtn.classList = "inline";
 		let northTxt = document.createElement("div");
-		northTxt.style = "text-align: center; width: 16px; height: 16px";
 		northTxt.textContent = "↑";
 		northBtn.appendChild(northTxt);
 		northBtn.title = "Ajouter/supprimer un passage vers le nord";
@@ -627,7 +619,6 @@ function init(){
 		directionMappingButtons[WEST] = westBtn;
 		westBtn.classList = "inline";
 		let westTxt = document.createElement("div");
-		westTxt.style = "text-align: center; width: 16px; height: 16px";
 		westTxt.textContent = "←";
 		westBtn.appendChild(westTxt);
 		westBtn.title = "Ajouter/supprimer un passage vers l'ouest";
@@ -641,9 +632,7 @@ function init(){
 
 		let allDirectionsBtn = document.createElement("button");
 		allDirectionsBtn.classList = "inline";
-		allDirectionsBtn.style.marginTop = 0;
 		let allDirectionsTxt = document.createElement("div");
-		allDirectionsTxt.style = "text-align: center; width: 16px; height: 16px";
 		allDirectionsTxt.textContent = "╬";
 		allDirectionsBtn.appendChild(allDirectionsTxt);
 		allDirectionsBtn.title = "Ajouter des passages dans toutes les directions";
@@ -678,9 +667,7 @@ function init(){
 		let eastBtn = document.createElement("button");
 		directionMappingButtons[EAST] = eastBtn;
 		eastBtn.classList = "inline";
-		eastBtn.style.marginTop = 0;
 		let eastTxt = document.createElement("div");
-		eastTxt.style = "text-align: center; width: 16px; height: 16px";
 		eastTxt.textContent = "→";
 		eastBtn.appendChild(eastTxt);
 		eastBtn.title = "Ajouter/supprimer un passage vers l'est";
@@ -696,9 +683,7 @@ function init(){
 		let southBtn = document.createElement("button");
 		directionMappingButtons[SOUTH] = southBtn;
 		southBtn.classList = "inline";
-		southBtn.style.textAlign = "center";
 		let southTxt = document.createElement("div");
-		southTxt.style = "text-align: center; width: 16px; height: 16px";
 		southTxt.textContent = "↓";
 		southBtn.appendChild(southTxt);
 		southBtn.title = "Ajouter/supprimer un passage vers le sud";
@@ -711,9 +696,30 @@ function init(){
 		directionsBtnGrp.appendChild(southBtn);
 		directionsBtnGrp.appendChild(document.createElement("div"));
 		directionsFlexElt.appendChild(directionsBtnGrp);
-		mappingBtns.appendChild(directionsFlexElt);
+		ruineExplorerMappingBtns.appendChild(directionsFlexElt);
 		
-		menu.appendChild(mappingBtns);
+		if(location !== LOCATION_MH || !phoneModeOption){
+			ruineExplorerMenu.appendChild(ruineExplorerMappingBtns);
+		}
+		if(location === LOCATION_MH){
+			GM_addValueChangeListener("phoneModeOption", (_a, _b, newValue) => {
+				if(newValue){
+					let map = document.querySelector(".ruin_map_area .map");
+					if(map !== null){
+						map.appendChild(mapGrid);
+					}else if(mapGrid.parentElement !== null){
+						mapGrid.parentElement.removeChild(mapGrid);
+					}
+					let ruinMapArea = document.querySelector(".ruin_map_area");
+					if(ruinMapArea !== null){
+						ruinMapArea.parentElement.parentElement.after(ruineExplorerMappingBtns);
+					}
+				}else{
+					optionsSection.before(ruineExplorerMappingBtns);
+					optionsSection.before(mapGrid);
+				}
+			});
+		}
 
 		document.body.addEventListener("keydown", e => {
 			if(e.key == "2"){
@@ -763,37 +769,188 @@ function init(){
 				}
 			}
 		});
-	}else if(window.location.href.match("https://bbh.fred26.fr/") || window.location.href.match("https://gest-hordes2.eragaming.fr/")){
+	}else if(location === LOCATION_BBH || location === LOCATION_GH){
 		let importExportBtns = document.createElement("div");
-		importExportBtns.style = "border-bottom: 1px solid black";
 		let importBtn = document.createElement("button");
 		importBtn.textContent = "Importer";
 		importBtn.addEventListener("click", importMap);
 		importExportBtns.appendChild(importBtn);
-		if(window.location.href.match("https://bbh.fred26.fr/")){
+		if(location === LOCATION_BBH){
 			let exportBtn = document.createElement("button");
 			exportBtn.textContent = "Exporter";
 			exportBtn.addEventListener("click", exportMap);
 			importExportBtns.appendChild(exportBtn);
 		}
-		menu.appendChild(importExportBtns);
+		ruineExplorerMenu.appendChild(importExportBtns);
 	}
 
 	mapGrid = document.createElement("div");
-	mapGrid.style = `display: grid; grid-template-columns: repeat(${MAP_WIDTH}, 1fr); grid-template-rows: repeat(${MAP_HEIGHT}, 1fr); aspect-ratio: ${MAP_WIDTH} / ${MAP_HEIGHT}; width: 100%; column-gap: 0; row-gap: 0`;
+	mapGrid.id = "ruineExplorerMapGrid";
 	for(let i = 0; i < MAP_WIDTH*MAP_HEIGHT; i++){
 		let div = document.createElement("div");
-		div.style.position = "relative";
 		mapGrid.appendChild(div);
 	}
 	writeMap();
-	menu.appendChild(mapGrid);
-	document.body.appendChild(menu);
-	menu.style.bottom = (title.offsetHeight - menu.offsetHeight) + "px";
+	if(!(location === LOCATION_MH && phoneModeOption)){
+		ruineExplorerMenu.appendChild(mapGrid);
+	}
+
+	let phoneModeLbl = document.createElement("label");
+	phoneModeLbl.textContent = "Mode téléphone";
+	phoneModeLbl.htmlFor = "ruineExplorerPhoneModeChb";
+	optionsSection.appendChild(phoneModeLbl);
+	let phoneModeChb = document.createElement("input");
+	phoneModeChb.id = "ruineExplorerPhoneModeChb";
+	phoneModeChb.type = "checkbox";
+	phoneModeChb.checked = phoneModeOption;
+	phoneModeChb.addEventListener("change", () => {
+		GM_setValue("phoneModeOption", phoneModeChb.checked);
+	});
+	optionsSection.appendChild(phoneModeChb);
+	ruineExplorerMenu.appendChild(optionsSection);
+
+	document.body.appendChild(ruineExplorerMenu);
 
 	let stylesheet = document.createElement("style");
 	stylesheet.type = "text/css";
 	stylesheet.innerText = `
+		#ruineExplorerMenu {
+			position: fixed;
+			left: 2%;
+			background-color: rgb(205, 159, 110);
+			border-radius: 10px 10px 0px 0px;
+			transition: transform 0.5s linear 0s;
+			width: calc((100% - 950px)/2 - 4%);
+			max-width: ${MAP_WIDTH*22}px;
+			min-width: ${MAP_WIDTH*11}px;
+			bottom: 0;
+		}
+
+		#ruineExplorerMenu.folded {
+			transform: translateY(calc(100% - 2em));
+		}
+
+		#ruineExplorerMenu > div:not(:first-child):not(:last-child) {
+			border-bottom: 1px solid black;
+		}
+
+		#ruineExplorerMenu > div:first-child {
+			color: white;
+			background-color: #714526;
+			padding: 5px;
+			border-radius: 10px 10px 0px 0px;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		#ruineExplorerMenu > div:nth-child(2) {
+			text-align: center;
+		}
+
+		#ruineExplorerMenu > div:nth-child(2) button {
+			float: right;
+		}
+
+		#ruineExplorerMappingBtns {
+			display: flex;
+			width: 100%;
+		}
+
+		.invisible {
+			display: none !important;
+		}
+
+		#ruineExplorerMappingBtns button > div {
+			text-align: center;
+			width: 16px;
+			height: 16px;
+		}
+
+		.manual-background #ruineExplorerMappingBtns {
+			background-color: #7e4d2a;
+			border: 1px solid #efdba8;
+			border-radius: 8px;
+			margin: 3px;
+			width: unset;
+		}
+
+		#ruineExplorerMappingBtns > div:first-child {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		#ruineExplorerMappingBtns > div:first-child > * {
+			margin-left: 1%;
+			margin-right: 1%;
+		}
+
+		#ruineExplorerMappingBtns > div:last-child > div {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-rows: 1fr 1fr 1fr;
+			position: relative; top: 50%;
+			transform: translateY(-50%);
+		}
+
+		#ruineExplorerMappingBtns > div:last-child button {
+			margin-top: 0;
+		}
+
+		.no-wrap {
+			white-space: nowrap;
+		}
+
+		#ruineExplorerMapGrid {
+			display: grid;
+			grid-template-columns: repeat(${MAP_WIDTH}, 1fr);
+			grid-template-rows: repeat(${MAP_HEIGHT}, 1fr);
+			aspect-ratio: ${MAP_WIDTH} / ${MAP_HEIGHT};
+			column-gap: 0;
+			row-gap: 0;
+			width: 100%;
+		}
+
+		#ruineExplorerMapGrid div {
+			position: relative;
+		}
+
+		:where(.ruin_map_area, hordes-map) #ruineExplorerMapGrid {
+			position: absolute;
+			z-index: 2;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 66%;
+		}
+
+		#ruineExplorerMenu svg {
+			fill: white;
+			stroke: black;
+			stroke-width: 5;
+		}
+
+		:where(.ruin_map_area, hordes-map) #ruineExplorerMapGrid svg {
+			fill: rgba(0, 0, 0, 0.5);
+			stroke: white;
+			stroke-width: 10;
+		}
+
+		#ruineExplorerMapGrid .z1 svg {
+			fill: yellow;
+		}
+
+		#ruineExplorerMapGrid .z2 svg {
+			fill: orange;
+		}
+
+		#ruineExplorerMapGrid .z3 svg {
+			fill: red;
+		}
+
+		#ruineExplorerMapGrid .z4 svg {
+			fill: violet;
+		}
+
 		@keyframes blink {
 			from, to {
 				opacity: 1;
@@ -815,7 +972,24 @@ init();
 let sawEntrance = false;
 function main(){
 	console.log("[REDU] Entering main function");
+	if(location === LOCATION_MH && GM_getValue("phoneModeOption", false)){
+		let map = document.querySelector(".ruin_map_area .map");
+		if(map !== null && map.children.namedItem("ruineExplorerMapGrid") === null){
+			map.appendChild(mapGrid);
+		}
+		let ruinMapArea = document.querySelector(".ruin_map_area");
+		if(ruinMapArea !== null && ruinMapArea.parentElement.parentElement.parentElement.children.namedItem("ruineExplorerMappingBtns") === null){
+			ruinMapArea.parentElement.parentElement.after(ruineExplorerMappingBtns);
+		}
+	}
 	let zonePlaneUi = document.querySelector(".zone-plane-ui");
+	if(ruineExplorerMappingBtns !== null){
+		if(zonePlaneUi === null){
+			ruineExplorerMappingBtns.classList.add("invisible");
+		}else{
+			ruineExplorerMappingBtns.classList.remove("invisible");
+		}
+	}
 	if(zonePlaneUi === null){
 		console.log("[REDU] .zone-plane-ui isn't found, aborting.");
 		return;
