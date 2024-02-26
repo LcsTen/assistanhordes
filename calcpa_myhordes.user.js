@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.5
+// @version  0.6
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
@@ -74,7 +74,7 @@ function main(){
 	let food7 = intersect(inventory, FOOD7);
 	let willGetAPFromDrink = (intersect(states, ["hasdrunk", "thirst2", "ghoul"]).length === 0);
 	let water = intersect(inventory, WATER);
-	let canDrinkAlcohol = (intersect(inventory, ["drunk", "hungover"]).length === 0);
+	let canDrinkAlcohol = (intersect(states, ["drunk", "hungover"]).length === 0);
 	let alcohol = intersect(inventory, ALCOHOL);
 	let randomDrugs = intersect(inventory, RANDOM_DRUG);
 	let randomGames = unique(intersect(inventory, RANDOM_GAME));
