@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.6
+// @version  0.7
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
@@ -11,11 +11,11 @@
 "use strict";
 
 const FOOD6 = ["food_chick", "food_tarte", "can_open", "food_bar3", "food_sandw", "omg_this_will_kill_you", "vegetable", "food_bar2", "food_noodles",
-	       "bone_meat", "food_bar1", "food_biscuit", "food_pims", "dish", "fruit", "hmeat", "undef"];
-const FOOD7 = ["dish_tasty", "cadaver", "chama_tasty", "vegetable_tasty", "food_noodles_hot", "egg", "candies", "apple", "meat", "woodsteak"];
+	       "bone_meat", "food_bar1", "food_biscuit", "food_pims", "dish", "fruit", "hmeat", "undef", "bretz"];
+const FOOD7 = ["dish_tasty", "cadaver", "chama_tasty", "vegetable_tasty", "food_noodles_hot", "egg", "food_candies", "apple", "meat", "woodsteak"];
 const WATER = ["water_can_1", "water_can_2", "water_can_3", "water_cup", "potion", "water"];
-const RANDOM_DRUG = ["beta_drug_bad", "drug_random"];
-const ALCOHOL = ["hmbrew", "vodka", "rhum", "fest", "guiness"];
+const RANDOM_DRUG = ["beta_drug_bad", "drug_random", "lsd"];
+const ALCOHOL = ["hmbrew", "vodka", "rhum", "fest", "guiness", "vodka_de"];
 const RANDOM_GAME = ["dice", "cards"];
 
 let armageddhordes = document.title.includes("Armagedd'Hordes");
@@ -79,7 +79,6 @@ function main(){
 	let randomDrugs = intersect(inventory, RANDOM_DRUG);
 	let randomGames = unique(intersect(inventory, RANDOM_GAME));
 	let coffees = intersect(inventory, ["coffee"]);
-	let lsd = intersect(inventory, ["lsd"]);
 	let isWounded = (intersect(states, ["wound1", "wound2", "wound3", "wound4", "wound5", "wound6"]).length !== 0);
 	let sportElec = intersect(inventory, ["sport_elec"]);
 	let stero = intersect(inventory, ["drug"]);
@@ -103,7 +102,6 @@ function main(){
 		{canUse: true, ap: (7-isWounded)*apMultiplier, items: randomDrugs, multiple: true, random: true},
 		{canUse: true, ap: 1*apMultiplier, items: randomGames, multiple: true, random: true},
 		{canUse: true, ap: 4*apMultiplier, items: coffees, multiple: true, random: false},
-		{canUse: true, ap: (6-isWounded)*apMultiplier, items: lsd, multiple: true, random: false},
 		{canUse: !isWounded, ap: 5*apMultiplier, items: sportElec, multiple: false, random: false},
 		{canUse: true, ap: (6-isWounded)*apMultiplier, items: stero, multiple: true, random: false},
 		{canUse: true, ap: (8-isWounded)*apMultiplier, items: twinoid, multiple: true, random: false},
