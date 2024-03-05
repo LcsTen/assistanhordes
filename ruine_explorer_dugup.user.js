@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.4
+// @version  0.5
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -165,22 +165,22 @@ const BBH_TO_REDU_ZOMBIES = {
 const REDU_TO_BBH_ZOMBIES = invertMap(BBH_TO_REDU_ZOMBIES);
 
 const GH_TO_REDU_DIRECTIONS = {
-	19: EMPTY,
-	12: NORTH,
-	14: EAST,
-	13: SOUTH,
-	11: WEST,
-	3: NORTH | EAST,
-	0: NORTH | SOUTH,
-	2: NORTH | WEST,
-	5: EAST | SOUTH,
-	1: EAST | WEST,
-	4: SOUTH | WEST,
-	10: EAST | SOUTH | WEST,
-	8: NORTH | SOUTH | WEST,
-	9: NORTH | EAST | WEST,
-	7: NORTH | EAST | SOUTH,
-	6: NORTH | EAST | SOUTH | WEST
+	0: EMPTY,
+	2: NORTH,
+	4: EAST,
+	8: SOUTH,
+	1: WEST,
+	6: NORTH | EAST,
+	10: NORTH | SOUTH,
+	3: NORTH | WEST,
+	12: EAST | SOUTH,
+	5: EAST | WEST,
+	9: SOUTH | WEST,
+	13: EAST | SOUTH | WEST,
+	11: NORTH | SOUTH | WEST,
+	7: NORTH | EAST | WEST,
+	14: NORTH | EAST | SOUTH,
+	15: NORTH | EAST | SOUTH | WEST
 };
 
 const REDU_TO_GH_DIRECTIONS = {};
