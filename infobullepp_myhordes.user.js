@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11118
+// @version  0.11119
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
@@ -953,7 +953,11 @@ function createNewTooltips(){
 
 function main(){
 	for(let item of unsafeWindow.document.querySelectorAll(".item:not(hordes-tooltip):not(.ib-tooltipped)")){
-		let itemName = item.querySelector("img").src.match(/[^/]\/item_([^.]*)\./)[1];
+		let img = item.querySelector("img");
+		if(!img){
+			continue;
+		}
+		let itemName = img.src.match(/[^/]\/item_([^.]*)\./)[1];
 		let itemInfo = items[itemName];
 		if(itemInfo === undefined){
 			itemInfo = items[item.querySelector("h1")?.textContent.trim()];
@@ -1059,6 +1063,12 @@ new MutationObserver(() => {
 	}
 	if(node = document.querySelector("#gma")){
 		new MutationObserver(main).observe(node, {childList: true});
+		new MutationObserver(() => {
+			let node = document.querySelector("#header-rucksack-items");
+			if(node){
+				new MutationObserver(main).observe(node, {childList: true});
+			}
+		}).observe(node, {childList: true});
 	}
 	if(node = document.querySelector("hordes-log")){
 		new MutationObserver(() => {
@@ -1066,9 +1076,6 @@ new MutationObserver(() => {
 				new MutationObserver(createNewTooltips).observe(node, {childList: true});
 			}
 		}).observe(node, {childList: true});
-	}
-	if(node = document.querySelector("#header-rucksack-items")){
-		new MutationObserver(main).observe(node, {childList: true});
 	}
 	if(node = document.querySelector("#inventory_partial_html")){
 		new MutationObserver(main).observe(node, {childList: true});

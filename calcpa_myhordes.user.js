@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.7
+// @version  0.8
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
@@ -52,6 +52,10 @@ function unique(array){
 }
 
 function main(){
+	let cell = document.querySelector(".padded.cell.rw-8 .row .cell.rw-12");
+	if(cell === null){
+		return;
+	}
 	let inventory = [];
 	document.querySelectorAll("#gma .rucksack li span img").forEach(item => {
 		let match = item.src.match(/item_([^.]*)\.([^.]*)/);
@@ -140,7 +144,7 @@ function main(){
 		div.innerHTML = `Vous possédez <strong>${minAP}</strong> ${apImg} potentiels.`;
 	}
 	div.innerHTML += "<br>"+summary;
-	document.querySelector(".padded.cell.rw-8 .row .cell.rw-12").after(div);
+	cell.after(div);
 }
 
 new MutationObserver(() => {
@@ -149,8 +153,13 @@ new MutationObserver(() => {
 	if(node = document.querySelector("#beyond_desert_content")){
 		new MutationObserver(main).observe(node, {childList: true});
 	}
-	if(node = document.querySelector("#header-rucksack-items")){
-		new MutationObserver(main).observe(node, {childList: true});
+	if(node = document.querySelector("#gma")){
+		new MutationObserver(() => {
+			let node = document.querySelector("#header-rucksack-items");
+			if(node){
+				new MutationObserver(main).observe(node, {childList: true});
+			}
+		}).observe(node, {childList: true});
 	}
 	if(node = document.querySelector("#inventory_partial_html")){
 		new MutationObserver(main).observe(node, {childList: true});
