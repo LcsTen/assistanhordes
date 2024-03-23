@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Countdown Displayer
-// @version  0.3
+// @version  0.4
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
@@ -10,7 +10,7 @@
 
 "use strict";
 
-let toObserve = (document.title.includes("MyHordes") ? "span[x-countdown]" : "li[x-countdown]");
+let toObserve = (document.title.includes("MyHordes") ? "span[x-countdown-to]" : "li[x-countdown]");
 
 let observer = null;
 
