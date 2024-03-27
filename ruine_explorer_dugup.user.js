@@ -773,7 +773,11 @@ function init(){
 		let importExportBtns = document.createElement("div");
 		let importBtn = document.createElement("button");
 		importBtn.textContent = "Importer";
-		importBtn.addEventListener("click", importMap);
+		importBtn.addEventListener("click", () => {
+			if(confirm("Cela va écraser la carte de Ruine Explorer: Dug par celle de " + (location === LOCATION_BBH ? "BigBroth'Hordes" : "Gest'Hordes") + ". Êtes-vous sûr ?")){
+				importMap();
+			}
+		});
 		importExportBtns.appendChild(importBtn);
 		if(location === LOCATION_BBH){
 			let exportBtn = document.createElement("button");
