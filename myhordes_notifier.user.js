@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     MyHordes Notifier
-// @version  0.4
+// @version  0.5
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -74,3 +74,10 @@ new MutationObserver(() => {
 	}
 	GM_setValue("nbMsg", currentNbMsg);
 }).observe(document.querySelector("#postbox-new-msg-counter"), {childList: true});
+
+let bc = new BroadcastChannel("MyHordesNotifier");
+bc.addEventListener("message", e => {
+	if(!document.hasFocus() && !containsBlacklistedWord(e.data)){
+		new Notification(gameName, {body: e.data, icon: iconUrl});
+	}
+});

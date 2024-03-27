@@ -52,3 +52,12 @@ Explorer, which make ruin exploration easier by adding a minimap in the bottom
 left corner of the screen.
 
 [Install Ruine Explorer: Dug-Up](/LcsTen/assistanhordes/raw/master/ruine_explorer_dugup.user.js)
+
+### Log Watcher
+
+Log Watcher notifies of new messages in the coalition shoutbox, in the town
+forum and in the World Beyond log with a blinking indicator and in the title of
+the webpage. In addition, if MyHordes Notifier is installed, it is also notified
+using desktop notifications.
+
+[Install Log Watcher](/LcsTen/assistanhordes/raw/master/log_watcher.user.js)
