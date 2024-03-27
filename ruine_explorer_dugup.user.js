@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.5
+// @version  0.6
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -14,8 +14,6 @@
 // ==/UserScript==
 
 "use strict";
-
-console.log("[REDU] Starting...");
 
 const EMPTY = 0;
 const NORTH = 1 << 0;
@@ -975,7 +973,6 @@ init();
 
 let sawEntrance = false;
 function main(){
-	console.log("[REDU] Entering main function");
 	if(location === LOCATION_MH && GM_getValue("phoneModeOption", false)){
 		let map = document.querySelector(".ruin_map_area .map");
 		if(map !== null && map.children.namedItem("ruineExplorerMapGrid") === null){
@@ -995,7 +992,6 @@ function main(){
 		}
 	}
 	if(zonePlaneUi === null){
-		console.log("[REDU] .zone-plane-ui isn't found, aborting.");
 		return;
 	}
 	if(document.querySelector(".plane-type-exit") !== null){
@@ -1014,17 +1010,13 @@ function main(){
 		ruineExplorerPosition.style = style;
 		updatePosition();
 		zonePlaneUi.appendChild(ruineExplorerPosition);
-	}else{
-		console.log("[REDU] #ruine_explorer_position already exists.");
 	}
 	for(let actionMove of document.querySelectorAll(".zone-plane-controls > .action-move:not(.redu-listened)")){
 		let deltaX = actionMove.getAttribute("x-direction-x");
 		let deltaY = actionMove.getAttribute("x-direction-y"); // Y axis is reversed between MyHordes and REDU (In MyHordes +1 is North, while it's South in REDU)
 		if(deltaX === null || deltaY === null){
-			console.log(`[REDU] actionMove with classList "${actionMove.classList.value}" doesn't have attributes x-direction-x or x-direction-y, ignoring.`);
 			continue;
 		}
-		console.log(`[REDU] Infecting actionMove with classList "${actionMove.classList.value}" and attributes x-direction-x "${deltaX} and x-direction-y "${deltaY}"`);
 		actionMove.addEventListener("click", () => {
 			let position = GM_getValue("position", [ENTRANCE_X_POSITION, 0, 0]);
 			let map = GM_getValue("map");
@@ -1053,7 +1045,6 @@ function main(){
 			}
 			GM_setValue("position", position);
 			GM_setValue("map", map);
-			console.log(`[REDU] actionMove with classList "${actionMove.classList.value}" clicked, moved to ${position[0]} / ${position[1]}`);
 		});
 		actionMove.classList.add("redu-listened");
 	}
@@ -1080,10 +1071,6 @@ GM_addValueChangeListener("position", writeMap);
 GM_addValueChangeListener("position", updatePosition);
 GM_addValueChangeListener("map", writeMap);
 
-console.log("[REDU] Up and running.");
-
 main();
-
-console.log("[REDU] Launching the mutation observer.");
 
 new MutationObserver(main).observe(document.body, {childList: true, subtree: true}); // TODO: Optimize this
