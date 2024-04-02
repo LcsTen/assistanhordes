@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Log Watcher
-// @version  0.1
+// @version  0.2
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -290,7 +290,7 @@ new MutationObserver(() => {
 			}
 		}).observe(document.querySelector("hordes-log"), {childList: true});
 	}else if(location.href.includes("/jx/forum/")){
-		if(document.querySelector(".cell.padded.rw-5.rw-md-12 .forum-header-bar b").textContent.trim() == document.querySelector(".town-name").textContent){
+		if(document.querySelector('.tab.selected [x-ajax-href="/jx/forum/town"]') !== null){
 			if(document.querySelector(".forum-thread-unread") === null){
 				checkNewTownForumMsg().then(res => GM_setValue("unreadTownForum", res));
 			}
