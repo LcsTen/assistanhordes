@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.6
+// @version  0.7
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -356,7 +356,7 @@ function importMap(){
 	}
 }
 
-function exportMap(){
+function exportMap(replace){
 	// TODO: Support GH
 	if(location === LOCATION_BBH){
 		let map = GM_getValue("map");
@@ -365,6 +365,9 @@ function exportMap(){
 				for(let k = 0; k < MAP_WIDTH; k++){
 					let tile = map[i][j][k];
 					if(tile.door === ENTRANCE){
+						continue;
+					}
+					if(tile.directions === EMPTY && !replace){
 						continue;
 					}
 					sel_case(i*464 + j*29 + k + 37);
@@ -778,10 +781,14 @@ function init(){
 		});
 		importExportBtns.appendChild(importBtn);
 		if(location === LOCATION_BBH){
-			let exportBtn = document.createElement("button");
-			exportBtn.textContent = "Exporter";
-			exportBtn.addEventListener("click", exportMap);
-			importExportBtns.appendChild(exportBtn);
+			let exportReplaceBtn = document.createElement("button");
+			exportReplaceBtn.textContent = "Exporter (remplacer)";
+			exportReplaceBtn.addEventListener("click", () => exportMap(true));
+			importExportBtns.appendChild(exportReplaceBtn);
+			let exportCompleteBtn = document.createElement("button");
+			exportCompleteBtn.textContent = "Exporter (compléter)";
+			exportCompleteBtn.addEventListener("click", () => exportMap(false));
+			importExportBtns.appendChild(exportCompleteBtn);
 		}
 		ruineExplorerMenu.appendChild(importExportBtns);
 	}
