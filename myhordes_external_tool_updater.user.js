@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
-// @version  1.2
+// @version  1.3
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @match    https://bbh.fred26.fr/*
 // @match    https://gest-hordes2.eragaming.fr/*
 // @match    https://fatamorgana.md26.eu/map
@@ -14,7 +15,7 @@
 
 "use strict";
 
-if(window.location.toString().match("https://myhordes.de/") || window.location.toString().match("https://myhordes.eu/")){
+if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es"){
 	let button;
 
 	function updateButtonText(){
@@ -57,11 +58,11 @@ if(window.location.toString().match("https://myhordes.de/") || window.location.t
 	GM_setValue("ping", (GM_getValue("ping", 0) + 1) % 2);
 }else{
 	let site;
-	if(window.location.toString().match("https://bbh.fred26.fr/")){
+	if(window.location.host == "bbh.fred26.fr"){
 		site = "bbh";
-	}else if(window.location.toString().match("https://gest-hordes2.eragaming.fr/")){
+	}else if(window.location.host == "gest-hordes2.eragaming.fr"){
 		site = "gh";
-	}else if(window.location.toString().match("https://fatamorgana.md26.eu/")){
+	}else if(window.location.host == "fatamorgana.md26.eu"){
 		site = "fm";
 	}else{
 		// What the hell?

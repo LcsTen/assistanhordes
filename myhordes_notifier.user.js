@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name     MyHordes Notifier
-// @version  0.5
+// @version  0.6
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 

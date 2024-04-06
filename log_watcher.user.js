@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Log Watcher
-// @version  0.2
+// @version  0.3
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -8,6 +8,7 @@
 // @grant    unsafeWindow
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 
@@ -51,13 +52,13 @@ function getBeyondLog(param){
 	if(token === null){
 		return Promise.reject("The token isn't stolen yet.");
 	}
-	return fetch("https://myhordes.eu/rest/v1/game/log/beyond" + (param !== "" ? "?" + param : ""),
+	return fetch(`https://${window.location.host}/rest/v1/game/log/beyond${param !== "" ? "?" + param : ""}`,
 		     {credentials: "same-origin", headers: {"X-Toaster": token, "Accept": "application/json"}})
 		.then(res => res.json());
 }
 
 function getCoalitionShoutbox(){
-	return fetch("https://myhordes.eu/jx/soul/shoutbox",
+	return fetch(`https://${window.location.host}/jx/soul/shoutbox`,
 		     {headers: {"X-Requested-With": "XMLHttpRequest"}})
 		.then(res => {
 			if(!res.ok){
@@ -68,7 +69,7 @@ function getCoalitionShoutbox(){
 }
 
 function getTownForum(){
-	return fetch("https://myhordes.eu/jx/forum/town",
+	return fetch(`https://${window.location.host}/jx/forum/town`,
 		     {headers: {"X-Requested-With": "XMLHttpRequest"}})
 		.then(res => res.text());
 }
@@ -121,7 +122,7 @@ function init(){
 	let coalitionMsgIndicator = document.createElement("a");
 	coalitionMsgIndicator.id = "logWatcherCoalitionMsgIndicator";
 	coalitionMsgIndicator.classList = !!GM_getValue("lastReadShoutboxMsg") ? "" : "invisible";
-	coalitionMsgIndicator.href = "https://myhordes.eu/jx/soul/coalitions";
+	coalitionMsgIndicator.href = `https://${window.location.host}/jx/soul/coalitions`;
 	coalitionMsgIndicator.target = "_self";
 	let coalitionMsgIndicatorImg = document.createElement("img");
 	coalitionMsgIndicatorImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/escort_on.gif";
@@ -131,7 +132,7 @@ function init(){
 	let logMsgIndicator = document.createElement("a");
 	logMsgIndicator.id = "logWatcherLogMsgIndicator";
 	logMsgIndicator.classList = (!!GM_getValue("lastReadBeyondLogId") && GM_getValue("incarnated", true)) ? "" : "invisible";
-	logMsgIndicator.href = "https://myhordes.eu/jx/beyond/desert/cached#beyond_log_content";
+	logMsgIndicator.href = `https://${window.location.host}/jx/beyond/desert/cached#beyond_log_content`;
 	logMsgIndicator.target = "_self";
 	let logMsgIndicatorImg = document.createElement("img");
 	logMsgIndicatorImg.src = "https://gitlab.com/eternaltwin/myhordes/myhordes/-/raw/master/assets/img/icons/news.gif";

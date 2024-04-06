@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name     CalcPA for MyHordes
-// @version  0.8
+// @version  0.9
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 

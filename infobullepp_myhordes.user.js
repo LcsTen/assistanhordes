@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name     Infobulle++ for MyHordes
-// @version  0.11119
+// @version  0.11120
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @grant    unsafeWindow
 // ==/UserScript==
 

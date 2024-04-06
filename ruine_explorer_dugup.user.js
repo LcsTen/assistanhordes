@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.7
+// @version  0.8
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
 // @grant    GM_addValueChangeListener
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
+// @match    https://myhord.es/*
 // @match    https://armageddhordes.adri-web.dev/*
 // @match    https://bbh.fred26.fr/*pg=ruins*
 // @match    https://gest-hordes2.eragaming.fr/*
@@ -219,13 +220,13 @@ let style = `
 `;
 
 let location;
-if(window.location.href.match("https://myhordes.de/") || window.location.href.match("https://myhordes.eu/") || window.location.href.match("https://armageddhordes.adri-web.dev")){
+if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es" ||  window.location.host == "armageddhordes.adri-web.dev"){
 	location = LOCATION_MH;
-}else if(window.location.href.match("https://bbh.fred26.fr/")){
+}else if(window.location.host == "bbh.fred26.fr"){
 	location = LOCATION_BBH;
-}else if(window.location.href.match("https://gest-hordes2.eragaming.fr/")){
+}else if(window.location.host == "gest-hordes2.eragaming.fr"){
 	location = LOCATION_GH;
-}else if(window.location.href.match("ruine_explorer_free_drive.html")){
+}else if(window.location.pathname.endsWith("/ruine_explorer_free_drive.html")){
 	location = LOCATION_TEST_PAGE;
 }
 let ruineExplorerPosition;
