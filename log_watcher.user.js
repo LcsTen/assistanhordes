@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Log Watcher
-// @version  0.3
+// @version  0.4
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -51,10 +51,18 @@ function generateTitleText(){
 function getBeyondLog(param){
 	if(token === null){
 		return Promise.reject("The token isn't stolen yet.");
+	}else if(!GM_getValue("beyondLogZoneId")){
+		return Promise.reject("The current zone id is unknown.");
 	}
-	return fetch(`https://${window.location.host}/rest/v1/game/log/beyond${param !== "" ? "?" + param : ""}`,
+	return fetch(`https://${window.location.host}/rest/v1/game/log/beyond/${GM_getValue("beyondLogZoneId")}${param !== "" ? "?" + param : ""}`,
 		     {credentials: "same-origin", headers: {"X-Toaster": token, "Accept": "application/json"}})
-		.then(res => res.json());
+		.then(res => {
+			if(res.ok){
+				return res.json();
+			}else{
+				throw res.status;
+			}
+		});
 }
 
 function getCoalitionShoutbox(){
@@ -84,7 +92,19 @@ function checkNewBeyondLog(){
 	}else if(GM_getValue("unreadBeyondLog")){
 		return Promise.resolve(true);
 	}
-	return getBeyondLog(`above=${GM_getValue("lastReadBeyondLogId")}`).then(res => res.entries.length !== 0);
+	return getBeyondLog(`above=${GM_getValue("lastReadBeyondLogId")}`)
+		.then(res => res.entries.length !== 0)
+		// The error 406 is thrown if /rest/v1/game/log/beyond/ is
+		// called with the wrong id: This possibly means the user moved
+		// in the meantime, so it is reasonable to assume that there
+		// are unread logs.
+		.catch(err => {
+			if(err === 406){
+				return true;
+			}else{
+				throw err;
+			}
+		});
 }
 
 function checkNewCoalitionShoutboxMsg(){
@@ -259,7 +279,6 @@ function init(){
 init();
 
 new MutationObserver(() => {
-	console.log("#content changed");
 	if(document.querySelector(".town-news") === null){
 		GM_setValue("incarnated", false);
 	}else{
@@ -280,6 +299,7 @@ new MutationObserver(() => {
 			}).observe(shoutboxContent, {childList: true});
 		}
 	}else if(location.href.includes("/jx/beyond/desert/cached")){
+		GM_setValue("beyondLogZoneId", document.getElementById("beyond-log").getAttribute("data-zone"));
 		new MutationObserver((_, observer) => {
 			observer.disconnect();
 			let logContent = document.querySelector(".log-content");
