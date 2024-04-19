@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.8
+// @version  0.9
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -1072,6 +1072,28 @@ function main(){
 			}
 		});
 		useStairsBtn.classList.add("redu-listened");
+	}
+	let enterRoomBtn = document.querySelector("#shift_button:not(.redu-listened)");
+	if(enterRoomBtn !== null){
+		enterRoomBtn.addEventListener("click", () => {
+			let position = GM_getValue("position", [ENTRANCE_X_POSITION, 0, 0]);
+			let map = GM_getValue("map");
+			map[position[2]][position[1]][position[0]].door = OPEN;
+			GM_setValue("map", map);
+		});
+		enterRoomBtn.classList.add("redu-listened");
+	}
+	let unlockRoomBtn = document.querySelector("#unlock_button:not(.redu-listened)");
+	if(unlockRoomBtn !== null){
+		unlockRoomBtn.addEventListener("click", () => {
+			let position = GM_getValue("position", [ENTRANCE_X_POSITION, 0, 0]);
+			let map = GM_getValue("map");
+			if(map[position[2]][position[1]][position[0]].door === NOTHING){
+				map[position[2]][position[1]][position[0]].door = LOCKED_UNKNOWN;
+				GM_setValue("map", map);
+			}
+		});
+		unlockRoomBtn.classList.add("redu-listened");
 	}
 }
 
