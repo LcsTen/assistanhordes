@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
-// @version  1.3
+// @version  1.4
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -23,7 +23,7 @@ if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu
 			let bbh = GM_getValue("bbh", 0);
 			let gh = GM_getValue("gh", 0);
 			let fm = GM_getValue("fm", 0);
-			button.innerHTML = `Mettre à jour <img style='opacity: ${fm > 0 ? 1 : 0.5}' class='right' src='https://fatamorgana.md26.eu/img/favicon.ico' alt='FM'> <img style='opacity: ${gh > 0 ? 1 : 0.5}' class='right' src='https://gest-hordes2.eragaming.fr/build/img/favicon.86f57e4e.gif' alt='GH'> <img style='opacity: ${bbh > 0 ? 1 : 0.5}' class='right' src='https://bbh.fred26.fr/favicon.ico' alt='BBH'>`;
+			button.innerHTML = `Mettre à jour <img style='height: 16px; opacity: ${fm > 0 ? 1 : 0.5}' class='right' src='https://fatamorgana.md26.eu/img/favicon.ico' alt='FM'> <img style='height: 16px; opacity: ${gh > 0 ? 1 : 0.5}' class='right' src='https://gest-hordes2.eragaming.fr/build/img/favicon.86f57e4e.gif' alt='GH'> <img style='height: 16px; opacity: ${bbh > 0 ? 1 : 0.5}' class='right' src='https://bbh.fred26.fr/favicon.ico' alt='BBH'>`;
 			button.disabled = (bbh + gh + fm == 0);
 		}
 	}
