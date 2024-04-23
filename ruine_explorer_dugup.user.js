@@ -296,10 +296,22 @@ function importMap(){
 	if(location === LOCATION_BBH){
 		let map = blankMap();
 		let ruinsPlan = document.querySelectorAll(".ruins_plan");
+		let stairLocation = null;
 		for(let i = 0; i < 2; i++){
+			let shift = [0, 0];
+			if(i === 1 && stairLocation !== null){
+				for(let j = 0; j < MAP_HEIGHT; j++){
+					for(let k = 0; k < MAP_WIDTH; k++){
+						let td = ruinsPlan[i].children[0].children[j + 2].children[k + 8];
+						if(td.querySelector(".p9")){
+							shift = [j - stairLocation[0], k - stairLocation[1]];
+						}
+					}
+				}
+			}
 			for(let j = 0; j < MAP_HEIGHT; j++){
 				for(let k = 0; k < MAP_WIDTH; k++){
-					let td = ruinsPlan[i].children[0].children[j + 2].children[k + 8];
+					let td = ruinsPlan[i].children[0].children[j + 2 + shift[0]].children[k + 8 + shift[1]];
 					for(let directionClass in BBH_TO_REDU_DIRECTIONS){
 						if(td.querySelector(".m" + directionClass)){
 							map[i][j][k].directions = BBH_TO_REDU_DIRECTIONS[directionClass];
@@ -311,6 +323,9 @@ function importMap(){
 							map[i][j][k].door = BBH_TO_REDU_DOORS[doorClass];
 							break;
 						}
+					}
+					if(td.querySelector(".p9")){
+						stairLocation = [j, k];
 					}
 					for(let zombiesClass in BBH_TO_REDU_ZOMBIES){
 						if(td.querySelector(".z" + zombiesClass)){
