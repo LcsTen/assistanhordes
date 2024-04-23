@@ -251,7 +251,8 @@ function writeMap(){
 			let currentDiv = mapGrid.children[i*MAP_WIDTH + j];
 			let currentTile = map[visibleFloor][i][j];
 			currentDiv.textContent = "";
-			currentDiv.classList = "z" + currentTile.zombies;
+			currentDiv.classList = "";
+			currentDiv.classList.add("z" + currentTile.zombies, "t" + currentTile.trust ?? 0);
 			if(currentTile.door !== NOTHING){
 				currentDiv.appendChild(DOORS_IMG[currentTile.door].cloneNode(true));
 			}
@@ -289,11 +290,13 @@ function blankMap(){
 	}
 	map[0][0][ENTRANCE_X_POSITION].door = ENTRANCE;
 	map[0][0][ENTRANCE_X_POSITION].directions = SOUTH;
+	map[0][0][ENTRANCE_X_POSITION].trust = 1;
 	return map;
 }
 
 function importMap(){
 	if(location === LOCATION_BBH){
+		let oldMap = GM_getValue("map", blankMap());
 		let map = blankMap();
 		let ruinsPlan = document.querySelectorAll(".ruins_plan");
 		let stairLocation = null;
@@ -333,6 +336,7 @@ function importMap(){
 							break;
 						}
 					}
+					map[i][j][k].trust = +((oldMap[i][j][k].trust ?? 0) && map[i][j][k].directions === oldMap[i][j][k].directions);
 				}
 			}
 		}
@@ -341,6 +345,7 @@ function importMap(){
 		if(!document.querySelector("#carteRuine")){
 			return;
 		}
+		let oldMap = GM_getValue("map", blankMap());
 		let map = blankMap();
 		let ghMaps = document.querySelectorAll("#carteRuine table");
 		for(let i = 0; i < Math.min(2, ghMaps.length); i++){
@@ -365,6 +370,7 @@ function importMap(){
 						let zombiesNb = zombiesNbClass[zombiesNbClass.length - 1];
 						map[i][j][k].zombies = +zombiesNb;
 					}
+					map[i][j][k].trust = +((oldMap[i][j][k].trust ?? 0) && map[i][j][k].directions === oldMap[i][j][k].directions);
 				}
 			}
 		}
@@ -976,6 +982,10 @@ function init(){
 			fill: violet;
 		}
 
+		#ruineExplorerMapGrid .t0 svg {
+			stroke: red;
+		}
+
 		@keyframes blink {
 			from, to {
 				opacity: 1;
@@ -1066,6 +1076,7 @@ function main(){
 				map[position[2]][position[1]][position[0]].directions |= WEST;
 				map[position[2]][position[1]][position[0] - 1].directions |= EAST;
 			}
+			map[position[2]][position[1]][position[0]].trust = 1;
 			GM_setValue("position", position);
 			GM_setValue("map", map);
 		});
