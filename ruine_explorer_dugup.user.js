@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.9
+// @version  0.10
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -602,6 +602,7 @@ function init(){
 
 		let resetBtnGrp = document.createElement("div");
 		let resetBtn = document.createElement("button");
+		resetBtn.id = "ruineExplorerClearBtn";
 		resetBtn.classList = "inline";
 		resetBtn.title = "Supprimer la carte";
 		let resetImg = document.createElement("img");
@@ -609,6 +610,9 @@ function init(){
 		resetImg.alt = "Reset";
 		resetImg.style.margin = "0";
 		resetBtn.appendChild(resetImg);
+		let resetTxt = document.createElement("span");
+		resetTxt.textContent = "Supprimer la carte";
+		resetBtn.appendChild(resetTxt);
 		resetBtn.addEventListener("click", () => {
 			if(confirm("Supprimer la carte ?")){
 				GM_setValue("map", undefined);
@@ -721,7 +725,7 @@ function init(){
 		directionsFlexElt.appendChild(directionsBtnGrp);
 		ruineExplorerMappingBtns.appendChild(directionsFlexElt);
 		
-		if(location !== LOCATION_MH || !phoneModeOption){
+		if(location === LOCATION_TEST_PAGE || !phoneModeOption){
 			ruineExplorerMenu.appendChild(ruineExplorerMappingBtns);
 		}
 		if(location === LOCATION_MH){
@@ -887,7 +891,19 @@ function init(){
 			width: 100%;
 		}
 
-		.invisible {
+		#ruineExplorerClearBtn span {
+			display: none;
+		}
+
+		.all-invisible-except-clear-btn #ruineExplorerClearBtn span {
+			display: inline;
+		}
+
+		#ruineExplorerMappingBtns.all-invisible-except-clear-btn {
+			display: block;
+		}
+
+		.all-invisible-except-clear-btn :not(:has(#ruineExplorerClearBtn)):not(#ruineExplorerClearBtn):not(#ruineExplorerClearBtn *) {
 			display: none !important;
 		}
 
@@ -1019,9 +1035,9 @@ function main(){
 	let zonePlaneUi = document.querySelector(".zone-plane-ui");
 	if(ruineExplorerMappingBtns !== null){
 		if(zonePlaneUi === null){
-			ruineExplorerMappingBtns.classList.add("invisible");
+			ruineExplorerMappingBtns.classList.add("all-invisible-except-clear-btn");
 		}else{
-			ruineExplorerMappingBtns.classList.remove("invisible");
+			ruineExplorerMappingBtns.classList.remove("all-invisible-except-clear-btn");
 		}
 	}
 	if(zonePlaneUi === null){
