@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.10
+// @version  0.11
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -749,6 +749,10 @@ function init(){
 		}
 
 		document.body.addEventListener("keydown", e => {
+			if(document.querySelector(".zone-plane-ui") === null){
+				// Do nothing if we're not in the ruin
+				return;
+			}
 			if(e.key == "2"){
 				southBtn.click();
 			}else if(e.key == "4"){
