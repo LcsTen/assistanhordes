@@ -389,11 +389,13 @@ function exportMap(replace){
 					if(tile.door === ENTRANCE){
 						continue;
 					}
-					if(tile.directions === EMPTY && !replace){
+					sel_case(i*464 + j*29 + k + 37);
+					if(replace || tile.directions !== EMPTY){
+						mod_case("m", -1)
+					}
+					if(tile.directions === EMPTY){
 						continue;
 					}
-					sel_case(i*464 + j*29 + k + 37);
-					mod_case("m", -1);
 					mod_case("m", REDU_TO_BBH_DIRECTIONS[tile.directions]);
 					if(tile.door != NOTHING){
 						mod_case("p", REDU_TO_BBH_DOORS[tile.door]);
