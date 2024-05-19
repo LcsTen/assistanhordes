@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.11
+// @version  0.12
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -11,6 +11,7 @@
 // @match    https://armageddhordes.adri-web.dev/*
 // @match    https://bbh.fred26.fr/*pg=ruins*
 // @match    https://gest-hordes2.eragaming.fr/*
+// @match    https://fatamorgana.md26.eu/map
 // @match    https://codeberg.org/LcsTen/assistanhordes/raw/master/ruine_explorer_free_drive.html
 // ==/UserScript==
 
@@ -203,10 +204,61 @@ REDU_TO_GH_DOORS[LOCKED_MAGNETIC] = 5;
 REDU_TO_GH_DOORS[LOCKED_BUMP] = 4;
 REDU_TO_GH_DOORS[LOCKED_CLASSIC] = 3;
 
+const FM_TO_REDU_DIRECTIONS = {
+	0: EMPTY,
+	1: NORTH,
+	2: EAST,
+	3: SOUTH,
+	4: WEST,
+	8: NORTH | EAST,
+	5: NORTH | SOUTH,
+	11: NORTH | WEST,
+	9: EAST | SOUTH,
+	6: EAST | WEST,
+	10: SOUTH | WEST,
+	14: EAST | SOUTH | WEST,
+	15: NORTH | SOUTH | WEST,
+	12: NORTH | EAST | WEST,
+	13: NORTH | EAST | SOUTH,
+	7: NORTH | EAST | SOUTH | WEST
+};
+const REDU_TO_FM_DIRECTIONS = invertMap(FM_TO_REDU_DIRECTIONS);
+
+const FM_TO_REDU_DOORS = {
+	0: NOTHING,
+	2: OPEN,
+	1: LOCKED_UNKNOWN,
+	5: LOCKED_MAGNETIC,
+	4: LOCKED_BUMP,
+	3: LOCKED_CLASSIC,
+	6: STAIRS
+};
+const REDU_TO_FM_DOORS = invertMap(FM_TO_REDU_DOORS);
+
+const FM_TO_REDU_ZOMBIES = {
+	"-1": 0,
+	1: 1,
+	2: 2,
+	3: 3,
+	4: 4
+};
+const REDU_TO_FM_ZOMBIES = invertMap(FM_TO_REDU_ZOMBIES);
+
 const LOCATION_MH = 0;
 const LOCATION_BBH = 1;
 const LOCATION_GH = 2;
 const LOCATION_TEST_PAGE = 3;
+const LOCATION_FM = 4;
+
+function locationToString(location){
+	switch(location){
+		case LOCATION_MH: return "MyHordes";
+		case LOCATION_BBH: return "BigBroth'Hordes";
+		case LOCATION_GH: return "Gest'Hordes";
+		case LOCATION_TEST_PAGE: return "Page de test";
+		case LOCATION_FM: return "Fata Morgana";
+	}
+}
 
 let style = `
 	bottom: 5px;
@@ -228,6 +280,8 @@ if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu
 	location = LOCATION_GH;
 }else if(window.location.pathname.endsWith("/ruine_explorer_free_drive.html")){
 	location = LOCATION_TEST_PAGE;
+}else if(window.location.host === "fatamorgana.md26.eu"){
+	location = LOCATION_FM;
 }
 let ruineExplorerPosition;
 let visibleFloor;
@@ -294,6 +348,42 @@ function blankMap(){
 	return map;
 }
 
+function getFataMorganaMap(){
+	let oldMap = GM_getValue("map", blankMap());
+	let map = blankMap();
+	let fmMaps = document.querySelectorAll("#upperruinmap, #lowerruinmap");
+	for(let i = 0; i < 2; i++){
+		for(let j = 1; j < MAP_HEIGHT; j++){
+			for(let k = 0; k < MAP_WIDTH; k++){
+				let td = fmMaps[i].children[j + 1 - i].children[k + 1];
+				map[i][j][k].directions = EMPTY;
+				for(let directionClass in FM_TO_REDU_DIRECTIONS){
+					if(td.classList.contains("tile-" + directionClass)){
+						map[i][j][k].directions = FM_TO_REDU_DIRECTIONS[directionClass];
+						break;
+					}
+				}
+				map[i][j][k].door = NOTHING;
+				for(let doorClass in FM_TO_REDU_DOORS){
+					if(td.classList.contains("doorlock-" + doorClass)){
+						map[i][j][k].door = FM_TO_REDU_DOORS[doorClass];
+						break;
+					}
+				}
+				map[i][j][k].zombies = 0;
+				for(let zombiesClass in FM_TO_REDU_ZOMBIES){
+					if(td.classList.contains("zombie-" + zombiesClass)){
+						map[i][j][k].zombies = FM_TO_REDU_ZOMBIES[zombiesClass];
+						break;
+					}
+				}
+				map[i][j][k].trust = +((oldMap[i][j][k].trust ?? 0) && map[i][j][k].directions === oldMap[i][j][k].directions);
+			}
+		}
+	}
+	return map;
+}
+
 function importMap(){
 	if(location === LOCATION_BBH){
 		let oldMap = GM_getValue("map", blankMap());
@@ -313,6 +403,9 @@ function importMap(){
 				}
 			}
 			for(let j = 0; j < MAP_HEIGHT; j++){
+				if(i === 0 && j === 0){
+					continue;
+				}
 				for(let k = 0; k < MAP_WIDTH; k++){
 					let td = ruinsPlan[i].children[0].children[j + 2 + shift[0]].children[k + 8 + shift[1]];
 					for(let directionClass in BBH_TO_REDU_DIRECTIONS){
@@ -375,10 +468,16 @@ function importMap(){
 			}
 		}
 		GM_setValue("map", map);
+	}else if(location === LOCATION_FM){
+		GM_setValue("map", getFataMorganaMap());
 	}
 }
 
-function exportMap(replace){
+function sleep(ms){
+	return new Promise(ok => setTimeout(ok, ms));
+}
+
+async function exportMap(replace){
 	// TODO: Support GH
 	if(location === LOCATION_BBH){
 		let map = GM_getValue("map");
@@ -406,6 +505,41 @@ function exportMap(replace){
 				}
 			}
 		}
+	}else if(location === LOCATION_FM){
+		// If we do too much requests, we get caught by the anti-spam
+		// system of Fata Morgana and locked out of the site for one day.
+		// Putting an arbitrary interval reduces the risk of being
+		// caught.
+		// As a result, the export might take twelve minutes at worst to
+		// succeed. And you might still get caught.
+		const REQUEST_INTERVAL = 1000;
+		let ourMap = GM_getValue("map");
+		let theirMap = getFataMorganaMap();
+		let fmMaps = document.querySelectorAll("#upperruinmap, #lowerruinmap");
+		for(let i = 0; i < 2; i++){
+			for(let j = 1; j < MAP_HEIGHT; j++){
+				for(let k = 0; k < MAP_WIDTH; k++){
+					let tile = ourMap[i][j][k];
+					if(!replace && tile.directions === EMPTY){
+						continue;
+					}
+					await sleep(REQUEST_INTERVAL);
+					fmMaps[i].children[j + 1 - i].children[k + 1].click();
+					if(tile.directions !== theirMap[i][j][k].directions){
+						await sleep(REQUEST_INTERVAL);
+						document.querySelector(`[tile='${REDU_TO_FM_DIRECTIONS[tile.directions]}']`).click();
+					}
+					if(tile.door !== theirMap[i][j][k].door){
+						await sleep(REQUEST_INTERVAL);
+						document.querySelector(`[doorlock='${REDU_TO_FM_DOORS[tile.door]}']`).click();
+					}
+					if(tile.zombies !== theirMap[i][j][k].zombies){
+						await sleep(REQUEST_INTERVAL);
+						document.querySelector(`[zombie='${REDU_TO_FM_ZOMBIES[tile.zombies]}']`).click();
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -416,6 +550,9 @@ function init(){
 	ruineExplorerMenu = document.createElement("div");
 	ruineExplorerMenu.id = "ruineExplorerMenu";
 	ruineExplorerMenu.classList = "folded";
+	if(location === LOCATION_FM){
+		ruineExplorerMenu.style = "left: unset; right: 2%";
+	}
 	let title = document.createElement("div");
 	title.textContent = "Ruine Explorer";
 	title.addEventListener("click", () => ruineExplorerMenu.classList.toggle("folded"));
@@ -802,24 +939,39 @@ function init(){
 				}
 			}
 		});
-	}else if(location === LOCATION_BBH || location === LOCATION_GH){
+	}else if(location === LOCATION_BBH || location === LOCATION_GH || location === LOCATION_FM){
 		let importExportBtns = document.createElement("div");
 		let importBtn = document.createElement("button");
 		importBtn.textContent = "Importer";
 		importBtn.addEventListener("click", () => {
-			if(confirm("Cela va écraser la carte de Ruine Explorer: Dug par celle de " + (location === LOCATION_BBH ? "BigBroth'Hordes" : "Gest'Hordes") + ". Êtes-vous sûr ?")){
+			if(confirm(`Cela va écraser la carte de Ruine Explorer: Dug par celle de ${locationToString(location)}. Êtes-vous sûr ?`)){
 				importMap();
 			}
 		});
 		importExportBtns.appendChild(importBtn);
-		if(location === LOCATION_BBH){
+		if(location === LOCATION_BBH || location === LOCATION_FM){
+			let exportReplaceFn = () => exportMap(true);
+			let exportCompleteFn = () => exportMap(false);
+			if(location === LOCATION_FM){
+				const FATA_MORGANA_SUCKS_CONFIRM_MSG = "Attention ! En utilisant la fonction d'export vers Fata Morgana, vous prenez le risque de vous faire prendre par le système anti-spam de Fata Morgana. Si cela arrive, vous ne pourrez plus accéder à Fata Morgana pendant environ une journée. Pour éviter cela, il est recommandé de ne pas utiliser cette fonction et d'exporter à la main. Êtes-vous sûr de continuer ? En cas de problème, le développeur de Ruine Explorer: Dug-Up ne peut pas être considéré comme responsable.";
+				exportReplaceFn = () => {
+					if(confirm(FATA_MORGANA_SUCKS_CONFIRM_MSG)){
+						exportMap(true);
+					}
+				};
+				exportCompleteFn = () => {
+					if(confirm(FATA_MORGANA_SUCKS_CONFIRM_MSG)){
+						exportMap(false);
+					}
+				};
+			}
 			let exportReplaceBtn = document.createElement("button");
 			exportReplaceBtn.textContent = "Exporter (remplacer)";
-			exportReplaceBtn.addEventListener("click", () => exportMap(true));
+			exportReplaceBtn.addEventListener("click", exportReplaceFn);
 			importExportBtns.appendChild(exportReplaceBtn);
 			let exportCompleteBtn = document.createElement("button");
 			exportCompleteBtn.textContent = "Exporter (compléter)";
-			exportCompleteBtn.addEventListener("click", () => exportMap(false));
+			exportCompleteBtn.addEventListener("click", exportCompleteFn);
 			importExportBtns.appendChild(exportCompleteBtn);
 		}
 		ruineExplorerMenu.appendChild(importExportBtns);
@@ -865,6 +1017,7 @@ function init(){
 			max-width: ${MAP_WIDTH*22}px;
 			min-width: ${MAP_WIDTH*11}px;
 			bottom: 0;
+			z-index: 6;
 		}
 
 		#ruineExplorerMenu.folded {
