@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name     Countdown Displayer
-// @version  0.5
+// @version  0.6
 // @author   LcsTen
 // @grant    none
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
 // @match    https://myhord.es/*
+// @match    https://myhordes.fr/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 

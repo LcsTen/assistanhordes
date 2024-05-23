@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Log Watcher
-// @version  0.4
+// @version  0.5
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -9,6 +9,7 @@
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
 // @match    https://myhord.es/*
+// @match    https://myhordes.fr/*
 // @match    https://armageddhordes.adri-web.dev/*
 // ==/UserScript==
 

@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.12
+// @version  0.13
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -8,6 +8,7 @@
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
 // @match    https://myhord.es/*
+// @match    https://myhordes.fr/*
 // @match    https://armageddhordes.adri-web.dev/*
 // @match    https://bbh.fred26.fr/*pg=ruins*
 // @match    https://gest-hordes2.eragaming.fr/*
@@ -272,7 +273,7 @@ let style = `
 `;
 
 let location;
-if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es" ||  window.location.host == "armageddhordes.adri-web.dev"){
+if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es" || window.location.host == "myhordes.fr" ||  window.location.host == "armageddhordes.adri-web.dev"){
 	location = LOCATION_MH;
 }else if(window.location.host == "bbh.fred26.fr"){
 	location = LOCATION_BBH;

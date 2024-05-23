@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     MyHordes External Tool Updater
-// @version  1.4
+// @version  1.5
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -8,6 +8,7 @@
 // @match    https://myhordes.de/*
 // @match    https://myhordes.eu/*
 // @match    https://myhord.es/*
+// @match    https://myhordes.fr/*
 // @match    https://bbh.fred26.fr/*
 // @match    https://gest-hordes2.eragaming.fr/*
 // @match    https://fatamorgana.md26.eu/map
@@ -15,7 +16,7 @@
 
 "use strict";
 
-if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es"){
+if(window.location.host == "myhordes.de" || window.location.host == "myhordes.eu" || window.location.host == "myhord.es" || window.location.host == "myhordes.fr"){
 	let button;
 
 	function updateButtonText(){
