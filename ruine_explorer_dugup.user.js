@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     Ruine Explorer: Dug-Up
-// @version  0.13
+// @version  0.14
 // @author   LcsTen
 // @grant    GM_getValue
 // @grant    GM_setValue
@@ -319,7 +319,7 @@ function writeMap(){
 	}
 	let position = GM_getValue("position");
 	if(position !== undefined && position[2] === visibleFloor){
-		mapGrid.children[position[1]*MAP_WIDTH + position[0]].children[0].before(PLAYER_POSITION_IMG.cloneNode(true));
+		mapGrid.children[position[1]*MAP_WIDTH + position[0]].children[0]?.before(PLAYER_POSITION_IMG.cloneNode(true));
 	}
 }
 
