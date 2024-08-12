@@ -61,3 +61,14 @@ the webpage. In addition, if MyHordes Notifier is installed, it is also notified
 using desktop notifications.
 
 [Install Log Watcher](/LcsTen/assistanhordes/raw/master/log_watcher.user.js)
+
+### MetaMap
+
+MetaMap allows to look at the map from all external tools, BigBroth'Hordes,
+Gest'Hordes and Fata Morgana, in one place. For this, you must go into one of
+these external tools, and the information from the other external tools will be
+displayed in the tiles where it's the most recently updated information. Note
+that in order to update Gest'Hordes source, it must be opened in another tab.
+This isn't necessary for the other external tools.
+
+[Install MetaMap](/LcsTen/assistanhordes/raw/master/metamap.user.js)
